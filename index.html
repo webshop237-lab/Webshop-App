@@ -1164,7 +1164,8 @@
               </div>
               <button type="submit" style="width: 100%; background: #FF007F; color: #fff; border: none; padding: 16px; border-radius: 10px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s;" style-hover="background: #ff2a92;">{{ authBtnLabel }}</button>
             </form>
-            <p style="text-align: center; font-size: 13px; color: rgba(255,255,255,0.4); margin: 24px 0 0; line-height: 1.6;">Le code expire dans 10 minutes.<br>Pas reçu ? Vérifiez vos spams ou <span onClick="{{ switchToSignup }}" style="color:#FF007F; cursor:pointer;">recommencez l'inscription</span>.</p>
+            <p style="text-align: center; font-size: 12px; color: rgba(255,255,255,0.35); margin: 18px 0 12px;">Le code expire dans 10 minutes · Vérifiez vos spams</p>
+            <button onClick="{{ resendOtp }}" style="width: 100%; background: transparent; border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.55); padding: 13px; border-radius: 10px; font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s;" style-hover="border-color: #FF007F; color: #fff;">Je n'ai pas reçu de code</button>
           </sc-if>
 
           <!-- ── FORMULAIRE LOGIN / SIGNUP ── -->
@@ -1730,6 +1731,19 @@ class Component extends DCLogic {
     this._toastTimer = setTimeout(() => this.setState({ toastMsg: '', toastType: '' }), 4000);
   }
 
+  async resendOtp() {
+    const email = this.state.verifyEmail;
+    if (!email) return;
+    this.setState({ authLoading: true, verifyCode: '' });
+    const { error } = await db.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
+    this.setState({ authLoading: false });
+    if (error) {
+      this.showToast('Impossible d\'envoyer le code. Réessayez.', 'error');
+    } else {
+      this.showToast('Nouveau code envoyé à ' + email, 'success');
+    }
+  }
+
   async submitVerify(e) {
     e.preventDefault();
     const code = this.state.verifyCode.trim();
@@ -2127,6 +2141,7 @@ class Component extends DCLogic {
       verifyEmail: this.state.verifyEmail,
       verifyCode: this.state.verifyCode,
       submitVerify: (e) => this.submitVerify(e),
+      resendOtp: () => this.resendOtp(),
       onVerifyCode: (e) => this.setState({ verifyCode: e.target.value }),
       toastMsg: this.state.toastMsg,
       toastVisible: !!this.state.toastMsg,
