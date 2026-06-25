@@ -1773,6 +1773,7 @@ class Component extends DCLogic {
     await db.auth.signOut();
     this.setState({ authUser: null, adminView: false, adminData: null, accountView: false });
     document.body.style.overflow = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   showToast(msg, type) {
