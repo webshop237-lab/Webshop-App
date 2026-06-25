@@ -1924,12 +1924,14 @@ class Component extends DCLogic {
   persistAdmin(data) { try { localStorage.setItem('webshop_admin_v1', JSON.stringify(data)); } catch (e) {} this.setState({ adminData: data }); }
   mutate(fn) { const data = JSON.parse(JSON.stringify(this.state.adminData || this.seedAdmin())); fn(data); this.persistAdmin(data); }
   addRequest(f) {
-    if (!this.state.adminData) return;
-    const tempId = Date.now();
-    this.mutate(d => { d.requests.unshift({ id:tempId, prenom:f.prenom, nom:f.nom, email:f.email, tel:f.tel, ville:f.ville, service:f.service, message:f.message||'', status:'nouveau', date:new Date().toISOString().slice(0,10) }); });
-    db.from('requests').insert({ prenom:f.prenom, nom:f.nom, email:f.email, tel:f.tel, ville:f.ville, service:f.service, message:f.message||'' }).select().then(({data, error}) => {
+    db.from('requests').insert({
+      prenom: f.prenom, nom: f.nom, email: f.email, tel: f.tel,
+      ville: f.ville, service: f.service, message: f.message || ''
+    }).select().then(({ data, error }) => {
       if (error) { console.warn('Supabase insert request failed', error); return; }
-      if (data && data[0]) { this.mutate(d => { const it = d.requests.find(x => x.id === tempId); if (it) it.id = data[0].id; }); }
+      if (this.state.adminData && data && data[0]) {
+        this.mutate(d => { d.requests.unshift({ id:data[0].id, prenom:f.prenom, nom:f.nom, email:f.email, tel:f.tel, ville:f.ville, service:f.service, message:f.message||'', status:'nouveau', date:new Date().toISOString().slice(0,10) }); });
+      }
     });
   }
   openAdmin() {
