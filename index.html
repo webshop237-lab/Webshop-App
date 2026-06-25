@@ -1654,12 +1654,9 @@ class Component extends DCLogic {
   };
 
   componentDidMount() {
-    db.auth.getSession().then(({ data: { session } }) => {
-      if (session) this.setState({ authUser: session.user });
-    });
     this.authSub = db.auth.onAuthStateChange((_event, session) => {
-      this.setState({ authUser: session ? session.user : null });
-      if (_event === 'SIGNED_OUT') this.setState({ adminView: false });
+      if (_event === 'INITIAL_SESSION') return;
+      if (_event === 'SIGNED_OUT') { this.setState({ authUser: null, adminView: false, accountView: false }); return; }
     });
     const start = Date.now();
     const dur = 2200;
