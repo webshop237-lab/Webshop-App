@@ -1270,8 +1270,8 @@
 
   <!-- ════════ POPUP COMPTE UTILISATEUR ════════ -->
   <sc-if value="{{ accountView }}" hint-placeholder-val="{{ false }}">
-    <div style="position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,0.72); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 24px;" onClick="{{ closeAccount }}">
-      <div style="background: #141414; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; width: 100%; max-width: 420px; padding: 36px; position: relative; animation: wsFadeUp 0.3s ease-out;" onClick="(e) => e.stopPropagation()">
+    <div style="position: fixed; inset: 0; z-index: 400; background: rgba(0,0,0,0.72); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 24px;" onClick="{{ closeAccountOverlay }}">
+      <div style="background: #141414; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; width: 100%; max-width: 420px; padding: 36px; position: relative; animation: wsFadeUp 0.3s ease-out;" onClick="{{ stopPropagation }}">
         <button onClick="{{ closeAccount }}" style="position: absolute; top: 18px; right: 18px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.6); width: 36px; height: 36px; border-radius: 50%; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;" style-hover="color:#fff; border-color:#FF007F;">✕</button>
 
         <!-- Avatar + nom -->
@@ -2227,6 +2227,8 @@ class Component extends DCLogic {
       accountView: this.state.accountView,
       openAccount: () => this.openAccount(),
       closeAccount: () => this.closeAccount(),
+      closeAccountOverlay: (e) => { if (e.target === e.currentTarget) this.closeAccount(); },
+      stopPropagation: (e) => e.stopPropagation(),
       pwType: this.state.authShowPw ? 'text' : 'password',
       pwToggleLabel: this.state.authShowPw ? au.hide : au.show,
       openLogin: () => this.openAuth('login'),
