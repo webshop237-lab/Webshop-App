@@ -111,6 +111,24 @@
 
 <div style="background: #0A0A0A; color: #fff; min-height: 100vh; font-family: 'Geist', sans-serif; overflow-x: hidden;">
 
+  <!-- ════════ TOAST GLOBAL ════════ -->
+  <sc-if value="{{ toastVisible }}" hint-placeholder-val="{{ false }}">
+    <div style="position: fixed; top: 80px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; align-items: center; gap: 12px; padding: 16px 24px; border-radius: 12px; font-size: 15px; font-weight: 500; box-shadow: 0 8px 32px rgba(0,0,0,0.4); white-space: nowrap; animation: wsFadeUp 0.3s ease-out;">
+      <sc-if value="{{ toastIsSuccess }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; align-items:center; gap:12px; background: #0d2e1a; border: 1px solid rgba(0,200,80,0.5); color: #4ade80; padding: 16px 24px; border-radius: 12px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+          {{ toastMsg }}
+        </div>
+      </sc-if>
+      <sc-if value="{{ toastIsError }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; align-items:center; gap:12px; background: #2e0d0d; border: 1px solid rgba(220,50,50,0.5); color: #f87171; padding: 16px 24px; border-radius: 12px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          {{ toastMsg }}
+        </div>
+      </sc-if>
+    </div>
+  </sc-if>
+
   <!-- ════════ LOADING OVERLAY ════════ -->
   <sc-if value="{{ loading }}" hint-placeholder-val="{{ true }}">
     <div style="position: fixed; inset: 0; z-index: 9999; background: #0A0A0A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; transition: opacity 0.4s ease;">
@@ -1130,69 +1148,91 @@
       </div>
       <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding: 48px 28px; min-width: 0;">
         <div style="width: 100%; max-width: 420px;">
-          <button onClick="{{ closeAuth }}" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); padding: 8px 14px; border-radius: 999px; font-family: Geist; font-size: 11px; letter-spacing: 0.08em; cursor: pointer; margin-bottom: 30px;" style-hover="color: #fff; border-color: #FF007F;">← {{ t.auth.back }}</button>
-          <h2 style="font-size: 34px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 600; margin: 0 0 10px; color: #fff;">{{ authTitle }}</h2>
-          <p style="font-size: 15px; color: rgba(255,255,255,0.55); margin: 0 0 30px;">{{ authSub }}</p>
 
-          <sc-if value="{{ authMsgIsError }}" hint-placeholder-val="{{ false }}">
-            <div style="background: rgba(255,59,48,0.1); border: 1px solid rgba(255,59,48,0.35); color: #ff6b6b; border-radius: 10px; padding: 14px 16px; font-size: 14px; margin-bottom: 24px;">{{ authMsg }}</div>
-          </sc-if>
-          <sc-if value="{{ authMsgIsSuccess }}" hint-placeholder-val="{{ false }}">
-            <div style="background: rgba(0,255,133,0.1); border: 1px solid rgba(0,255,133,0.3); color: #9affc4; border-radius: 10px; padding: 14px 16px; font-size: 14px; margin-bottom: 24px;">{{ authMsg }}</div>
-          </sc-if>
-
-          <form onSubmit="{{ submitAuth }}">
-            <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
-              <div style="margin-bottom: 18px;">
-                <label style="font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.5);">{{ t.auth.name }}</label>
-                <input type="text" value="{{ authData.name }}" onChange="{{ onAuthName }}" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 14px 16px; font-family: inherit; font-size: 15px; color: #fff; margin-top: 8px; outline: none;">
-              </div>
-              <div style="margin-bottom: 18px;">
-                <label style="font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.5);">{{ t.auth.phone }}</label>
-                <input type="tel" value="{{ authData.phone }}" onChange="{{ onAuthPhone }}" placeholder="+237…" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 14px 16px; font-family: inherit; font-size: 15px; color: #fff; margin-top: 8px; outline: none;">
-              </div>
-            </sc-if>
-            <div style="margin-bottom: 18px;">
-              <label style="font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.5);">{{ t.auth.email }}</label>
-              <input type="email" value="{{ authData.email }}" onChange="{{ onAuthEmail }}" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 14px 16px; font-family: inherit; font-size: 15px; color: #fff; margin-top: 8px; outline: none;">
+          <!-- ── ÉCRAN VÉRIFICATION EMAIL ── -->
+          <sc-if value="{{ isVerify }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ closeAuth }}" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); padding: 8px 14px; border-radius: 999px; font-family: Geist; font-size: 11px; letter-spacing: 0.08em; cursor: pointer; margin-bottom: 30px;" style-hover="color: #fff; border-color: #FF007F;">← Retour</button>
+            <div style="width: 64px; height: 64px; background: linear-gradient(135deg,#FF007F,#7a0040); border-radius: 16px; display:flex; align-items:center; justify-content:center; margin-bottom: 24px;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
             </div>
-            <div style="margin-bottom: 18px;">
-              <label style="font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); display: flex; justify-content: space-between; align-items: center;">
-                <span>{{ t.auth.password }}</span>
-                <span onClick="{{ togglePw }}" style="cursor: pointer; color: #FF007F; font-family: sans-serif;">{{ pwToggleLabel }}</span>
-              </label>
-              <input type="{{ pwType }}" value="{{ authData.password }}" onChange="{{ onAuthPassword }}" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 14px 16px; font-family: inherit; font-size: 15px; color: #fff; margin-top: 8px; outline: none;">
-            </div>
-            <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+            <h2 style="font-size: 30px; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 10px; color: #fff;">Vérifiez votre email</h2>
+            <p style="font-size: 14px; color: rgba(255,255,255,0.55); margin: 0 0 32px; line-height: 1.6;">Un code de vérification a été envoyé à <span style="color:#FF007F; font-weight:500;">{{ verifyEmail }}</span>. Entrez-le ci-dessous.</p>
+            <form onSubmit="{{ submitVerify }}">
+              <div style="margin-bottom: 24px;">
+                <label style="font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.12em; color: rgba(255,255,255,0.5); display: block; margin-bottom: 10px;">CODE DE VÉRIFICATION</label>
+                <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="6" value="{{ verifyCode }}" onChange="{{ onVerifyCode }}" placeholder="000000" style="width: 100%; background: rgba(255,255,255,0.05); border: 2px solid rgba(255,0,127,0.4); border-radius: 12px; padding: 18px 20px; font-family: 'Geist Mono', monospace; font-size: 28px; letter-spacing: 0.25em; color: #fff; text-align: center; outline: none;" style-focus="border-color: #FF007F;">
+              </div>
+              <button type="submit" style="width: 100%; background: #FF007F; color: #fff; border: none; padding: 16px; border-radius: 10px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s;" style-hover="background: #ff2a92;">{{ authBtnLabel }}</button>
+            </form>
+            <p style="text-align: center; font-size: 13px; color: rgba(255,255,255,0.4); margin: 24px 0 0; line-height: 1.6;">Le code expire dans 10 minutes.<br>Pas reçu ? Vérifiez vos spams ou <span onClick="{{ switchToSignup }}" style="color:#FF007F; cursor:pointer;">recommencez l'inscription</span>.</p>
+          </sc-if>
+
+          <!-- ── FORMULAIRE LOGIN / SIGNUP ── -->
+          <sc-if value="{{ isLoginOrSignup }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ closeAuth }}" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.7); padding: 8px 14px; border-radius: 999px; font-family: Geist; font-size: 11px; letter-spacing: 0.08em; cursor: pointer; margin-bottom: 30px;" style-hover="color: #fff; border-color: #FF007F;">← {{ t.auth.back }}</button>
+            <h2 style="font-size: 34px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 600; margin: 0 0 10px; color: #fff;">{{ authTitle }}</h2>
+            <p style="font-size: 15px; color: rgba(255,255,255,0.55); margin: 0 0 30px;">{{ authSub }}</p>
+
+            <sc-if value="{{ authMsgIsError }}" hint-placeholder-val="{{ false }}">
+              <div style="background: rgba(255,59,48,0.1); border: 1px solid rgba(255,59,48,0.35); color: #ff6b6b; border-radius: 10px; padding: 14px 16px; font-size: 14px; margin-bottom: 24px;">{{ authMsg }}</div>
+            </sc-if>
+            <sc-if value="{{ authMsgIsSuccess }}" hint-placeholder-val="{{ false }}">
+              <div style="background: rgba(0,255,133,0.1); border: 1px solid rgba(0,255,133,0.3); color: #9affc4; border-radius: 10px; padding: 14px 16px; font-size: 14px; margin-bottom: 24px;">{{ authMsg }}</div>
+            </sc-if>
+
+            <form onSubmit="{{ submitAuth }}">
+              <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-bottom: 18px;">
+                  <label style="font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.5);">{{ t.auth.name }}</label>
+                  <input type="text" value="{{ authData.name }}" onChange="{{ onAuthName }}" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 14px 16px; font-family: inherit; font-size: 15px; color: #fff; margin-top: 8px; outline: none;">
+                </div>
+                <div style="margin-bottom: 18px;">
+                  <label style="font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.5);">{{ t.auth.phone }}</label>
+                  <input type="tel" value="{{ authData.phone }}" onChange="{{ onAuthPhone }}" placeholder="+237…" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 14px 16px; font-family: inherit; font-size: 15px; color: #fff; margin-top: 8px; outline: none;">
+                </div>
+              </sc-if>
               <div style="margin-bottom: 18px;">
-                <label style="font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.5);">{{ t.auth.confirm }}</label>
-                <input type="{{ pwType }}" value="{{ authData.confirm }}" onChange="{{ onAuthConfirm }}" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 14px 16px; font-family: inherit; font-size: 15px; color: #fff; margin-top: 8px; outline: none;">
+                <label style="font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.5);">{{ t.auth.email }}</label>
+                <input type="email" value="{{ authData.email }}" onChange="{{ onAuthEmail }}" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 14px 16px; font-family: inherit; font-size: 15px; color: #fff; margin-top: 8px; outline: none;">
               </div>
-            </sc-if>
-            <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; font-size: 13px;">
-                <label style="display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.6); cursor: pointer;"><input type="checkbox" style="accent-color: #FF007F;"> {{ t.auth.remember }}</label>
-                <a href="https://wa.me/237651410687" target="_blank" style="color: #FF007F; text-decoration: none;">{{ t.auth.forgot }}</a>
+              <div style="margin-bottom: 18px;">
+                <label style="font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.5); display: flex; justify-content: space-between; align-items: center;">
+                  <span>{{ t.auth.password }}</span>
+                  <span onClick="{{ togglePw }}" style="cursor: pointer; color: #FF007F; font-family: sans-serif;">{{ pwToggleLabel }}</span>
+                </label>
+                <input type="{{ pwType }}" value="{{ authData.password }}" onChange="{{ onAuthPassword }}" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 14px 16px; font-family: inherit; font-size: 15px; color: #fff; margin-top: 8px; outline: none;">
               </div>
-            </sc-if>
-            <button type="submit" style="width: 100%; background: #FF007F; color: #fff; border: none; padding: 16px; border-radius: 10px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s;" style-hover="background: #ff2a92;">{{ authBtnLabel }}</button>
-          </form>
+              <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-bottom: 18px;">
+                  <label style="font-family: 'Geist Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: rgba(255,255,255,0.5);">{{ t.auth.confirm }}</label>
+                  <input type="{{ pwType }}" value="{{ authData.confirm }}" onChange="{{ onAuthConfirm }}" style="width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.14); border-radius: 10px; padding: 14px 16px; font-family: inherit; font-size: 15px; color: #fff; margin-top: 8px; outline: none;">
+                </div>
+              </sc-if>
+              <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; font-size: 13px;">
+                  <label style="display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.6); cursor: pointer;"><input type="checkbox" style="accent-color: #FF007F;"> {{ t.auth.remember }}</label>
+                  <a href="https://wa.me/237651410687" target="_blank" style="color: #FF007F; text-decoration: none;">{{ t.auth.forgot }}</a>
+                </div>
+              </sc-if>
+              <button type="submit" style="width: 100%; background: #FF007F; color: #fff; border: none; padding: 16px; border-radius: 10px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s;" style-hover="background: #ff2a92;">{{ authBtnLabel }}</button>
+            </form>
 
-          <div style="display: flex; align-items: center; gap: 16px; margin: 26px 0;">
-            <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
-            <div style="font-family: 'Geist Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 0.08em;">{{ t.auth.orWa }}</div>
-            <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
-          </div>
-          <a href="{{ authWaHref }}" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(37,211,102,0.12); border: 1px solid rgba(37,211,102,0.35); color: #fff; text-decoration: none; padding: 14px; border-radius: 10px; font-size: 14px; font-weight: 500;" style-hover="background: rgba(37,211,102,0.2);">
-            <img src="uploads/whatsapp (1).png" alt="" style="width: 20px; height: 20px; object-fit: contain;"> {{ t.auth.whatsapp }}
-          </a>
+            <div style="display: flex; align-items: center; gap: 16px; margin: 26px 0;">
+              <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
+              <div style="font-family: 'Geist Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 0.08em;">{{ t.auth.orWa }}</div>
+              <div style="flex: 1; height: 1px; background: rgba(255,255,255,0.1);"></div>
+            </div>
+            <a href="{{ authWaHref }}" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 10px; background: rgba(37,211,102,0.12); border: 1px solid rgba(37,211,102,0.35); color: #fff; text-decoration: none; padding: 14px; border-radius: 10px; font-size: 14px; font-weight: 500;" style-hover="background: rgba(37,211,102,0.2);">
+              <img src="uploads/whatsapp (1).png" alt="" style="width: 20px; height: 20px; object-fit: contain;"> {{ t.auth.whatsapp }}
+            </a>
+            <div style="text-align: center; margin-top: 26px; font-size: 14px; color: rgba(255,255,255,0.55);">
+              <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">{{ t.auth.noAccount }} <span onClick="{{ switchToSignup }}" style="color: #FF007F; cursor: pointer; font-weight: 500;">{{ t.auth.signupLink }}</span></sc-if>
+              <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">{{ t.auth.hasAccount }} <span onClick="{{ switchToLogin }}" style="color: #FF007F; cursor: pointer; font-weight: 500;">{{ t.auth.loginLink }}</span></sc-if>
+            </div>
+            <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.35); margin: 20px 0 0; line-height: 1.5;">{{ t.auth.terms }}</p>
+            <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}"><p style="text-align: center; font-size: 11px; color: #FF007F; margin: 12px 0 0; line-height: 1.5;">{{ t.auth.adminHint }}</p></sc-if>
+          </sc-if>
 
-          <div style="text-align: center; margin-top: 26px; font-size: 14px; color: rgba(255,255,255,0.55);">
-            <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">{{ t.auth.noAccount }} <span onClick="{{ switchToSignup }}" style="color: #FF007F; cursor: pointer; font-weight: 500;">{{ t.auth.signupLink }}</span></sc-if>
-            <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">{{ t.auth.hasAccount }} <span onClick="{{ switchToLogin }}" style="color: #FF007F; cursor: pointer; font-weight: 500;">{{ t.auth.loginLink }}</span></sc-if>
-          </div>
-          <p style="text-align: center; font-size: 11px; color: rgba(255,255,255,0.35); margin: 20px 0 0; line-height: 1.5;">{{ t.auth.terms }}</p>
-          <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}"><p style="text-align: center; font-size: 11px; color: #FF007F; margin: 12px 0 0; line-height: 1.5;">{{ t.auth.adminHint }}</p></sc-if>
         </div>
       </div>
     </div>
@@ -1564,6 +1604,10 @@ class Component extends DCLogic {
     authLoading: false,
     authUser: null,
     accountView: false,
+    verifyEmail: '',
+    verifyCode: '',
+    toastMsg: '',
+    toastType: '',
     menuOpen: false,
     faqOpen: 0,
     adminView: false,
@@ -1650,8 +1694,8 @@ class Component extends DCLogic {
           : error.message;
         this.setState({ authMsg: msg }); return;
       }
-      this.setState({ authMsg: au.signupOk, authMsgType: 'success' });
-      setTimeout(() => this.setState({ authView: 'login', authMsg: au.signupOk, authMsgType: 'success' }), 1500);
+      this.setState({ verifyEmail: d.email, authView: 'verify', authMsg: '', authLoading: false });
+      db.auth.signInWithOtp({ email: d.email, options: { shouldCreateUser: false } });
       return;
     }
 
@@ -1678,6 +1722,28 @@ class Component extends DCLogic {
     await db.auth.signOut();
     this.setState({ authUser: null, adminView: false, adminData: null, accountView: false });
     document.body.style.overflow = '';
+  }
+
+  showToast(msg, type) {
+    this.setState({ toastMsg: msg, toastType: type });
+    clearTimeout(this._toastTimer);
+    this._toastTimer = setTimeout(() => this.setState({ toastMsg: '', toastType: '' }), 4000);
+  }
+
+  async submitVerify(e) {
+    e.preventDefault();
+    const code = this.state.verifyCode.trim();
+    const email = this.state.verifyEmail;
+    if (!code) return;
+    this.setState({ authLoading: true });
+    const { error } = await db.auth.verifyOtp({ email, token: code, type: 'email' });
+    this.setState({ authLoading: false });
+    if (error) {
+      this.showToast('Code incorrect. Vérifiez le code reçu par email.', 'error');
+      return;
+    }
+    this.closeAuth();
+    this.showToast('Vérification Confirmée — Bienvenue !', 'success');
   }
 
   openAccount() { this.setState({ accountView: true }); document.body.style.overflow = 'hidden'; }
@@ -1923,6 +1989,7 @@ class Component extends DCLogic {
     const au = t.auth;
     const isSignup = this.state.authView === 'signup';
     const isLogin = this.state.authView === 'login';
+    const isVerify = this.state.authView === 'verify';
 
     // ── FAQ ──
     const faqItems = t.faq.items.map((it, i) => ({
@@ -2039,7 +2106,8 @@ class Component extends DCLogic {
       stopProp: (e) => e.stopPropagation(),
 
       authOpen: this.state.authView !== null,
-      isLogin, isSignup,
+      isLogin, isSignup, isVerify,
+      isLoginOrSignup: isLogin || isSignup,
       authTitle: isSignup ? au.signupTitle : au.loginTitle,
       authSub: isSignup ? au.signupSub : au.loginSub,
       authData: this.state.authData,
@@ -2055,7 +2123,15 @@ class Component extends DCLogic {
       authUserFirstName: this.state.authUser ? ((this.state.authUser.user_metadata?.name || '').split(' ')[0] || this.state.authUser.email.split('@')[0]) : 'Login',
       authUserEmail: this.state.authUser ? this.state.authUser.email : '',
       authUserPhone: this.state.authUser ? (this.state.authUser.user_metadata?.phone || '') : '',
-      authBtnLabel: this.state.authLoading ? '…' : (isSignup ? au.signupBtn : au.loginBtn),
+      authBtnLabel: this.state.authLoading ? '…' : (isVerify ? 'Vérifier email' : (isSignup ? au.signupBtn : au.loginBtn)),
+      verifyEmail: this.state.verifyEmail,
+      verifyCode: this.state.verifyCode,
+      submitVerify: (e) => this.submitVerify(e),
+      onVerifyCode: (e) => this.setState({ verifyCode: e.target.value }),
+      toastMsg: this.state.toastMsg,
+      toastVisible: !!this.state.toastMsg,
+      toastIsSuccess: this.state.toastType === 'success',
+      toastIsError: this.state.toastType === 'error',
       onHeaderBtnClick: this.state.authUser ? () => this.openAccount() : () => this.openAuth('login'),
       accountView: this.state.accountView,
       openAccount: () => this.openAccount(),
