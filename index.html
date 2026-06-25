@@ -1894,7 +1894,12 @@ class Component extends DCLogic {
       if (data && data[0]) { this.mutate(d => { const it = d.requests.find(x => x.id === tempId); if (it) it.id = data[0].id; }); }
     });
   }
-  openAdmin() { if (!this.state.adminData) this.loadAdmin(); this.setState({ adminView:true, adminSection:'dashboard', authView:null, menuOpen:false, adminEdit:null }); document.body.style.overflow = 'hidden'; }
+  openAdmin() {
+    if (!this.state.authUser || this.state.authUser.email !== 'admin@gmail.com') return;
+    if (!this.state.adminData) this.loadAdmin();
+    this.setState({ adminView:true, adminSection:'dashboard', authView:null, menuOpen:false, adminEdit:null });
+    document.body.style.overflow = 'hidden';
+  }
   closeAdmin() { this.setState({ adminView:false, adminEdit:null }); document.body.style.overflow = ''; }
   setAdminSection(s) { this.setState({ adminSection:s, adminEdit:null }); }
   setStatus(coll, id, status) {
