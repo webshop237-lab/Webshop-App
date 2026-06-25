@@ -1698,13 +1698,12 @@ class Component extends DCLogic {
         this.setState({ authLoading: false });
         if (error) {
           const raw = parseErr(error);
-          const msg = (raw.includes('already registered') || raw.includes('already been registered'))
+          const msg = (raw.includes('already registered') || raw.includes('already been registered') || raw.includes('already exists'))
             ? (fr ? 'Cet email est déjà utilisé.' : 'This email is already registered.')
             : (raw || (fr ? 'Inscription échouée. Réessayez.' : 'Signup failed. Please try again.'));
           this.setState({ authMsg: msg }); return;
         }
-        this.setState({ verifyEmail: d.email, authView: 'verify', authMsg: '', authLoading: false });
-        db.auth.signInWithOtp({ email: d.email, options: { shouldCreateUser: false } });
+        this.setState({ authView: 'login', authMsg: fr ? 'Compte créé ! Connectez-vous maintenant.' : 'Account created! Please log in.', authMsgType: 'success' });
       } catch (e) {
         this.setState({ authLoading: false, authMsg: fr ? 'Erreur réseau. Vérifiez votre connexion.' : 'Network error. Check your connection.' });
       }
