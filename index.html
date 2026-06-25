@@ -1677,44 +1677,60 @@ class Component extends DCLogic {
     const lang = this.state.lang;
     const fr = lang === 'fr';
 
+    const parseErr = (err) => {
+      if (!err) return '';
+      if (typeof err === 'string') return err;
+      return String(err.message || err.msg || err.error_description || err.error || JSON.stringify(err) || '');
+    };
+
     if (this.state.authView === 'signup') {
-      if (!d.name.trim())      { this.setState({ authMsg: fr ? 'Nom complet requis.' : 'Full name required.' }); return; }
-      if (!d.email.trim())     { this.setState({ authMsg: fr ? 'Email requis.' : 'Email required.' }); return; }
+      if (!d.name.trim())        { this.setState({ authMsg: fr ? 'Nom complet requis.' : 'Full name required.' }); return; }
+      if (!d.email.trim())       { this.setState({ authMsg: fr ? 'Email requis.' : 'Email required.' }); return; }
       if (d.password.length < 6) { this.setState({ authMsg: fr ? 'Mot de passe : 6 caractères minimum.' : 'Password: at least 6 characters.' }); return; }
       if (d.password !== d.confirm) { this.setState({ authMsg: au.mismatch }); return; }
       this.setState({ authLoading: true, authMsg: '' });
-      const { data, error } = await db.auth.signUp({
-        email: d.email,
-        password: d.password,
-        options: { data: { name: d.name.trim(), phone: d.phone.trim() } }
-      });
-      this.setState({ authLoading: false });
-      if (error) {
-        const msg = error.message.includes('already registered')
-          ? (fr ? 'Cet email est déjà utilisé.' : 'This email is already registered.')
-          : error.message;
-        this.setState({ authMsg: msg }); return;
+      try {
+        const { data, error } = await db.auth.signUp({
+          email: d.email,
+          password: d.password,
+          options: { data: { name: d.name.trim(), phone: d.phone.trim() } }
+        });
+        this.setState({ authLoading: false });
+        if (error) {
+          const raw = parseErr(error);
+          const msg = (raw.includes('already registered') || raw.includes('already been registered'))
+            ? (fr ? 'Cet email est déjà utilisé.' : 'This email is already registered.')
+            : (raw || (fr ? 'Inscription échouée. Réessayez.' : 'Signup failed. Please try again.'));
+          this.setState({ authMsg: msg }); return;
+        }
+        this.setState({ verifyEmail: d.email, authView: 'verify', authMsg: '', authLoading: false });
+        db.auth.signInWithOtp({ email: d.email, options: { shouldCreateUser: false } });
+      } catch (e) {
+        this.setState({ authLoading: false, authMsg: fr ? 'Erreur réseau. Vérifiez votre connexion.' : 'Network error. Check your connection.' });
       }
-      this.setState({ verifyEmail: d.email, authView: 'verify', authMsg: '', authLoading: false });
-      db.auth.signInWithOtp({ email: d.email, options: { shouldCreateUser: false } });
       return;
     }
 
     if (this.state.authView === 'login') {
       if (!d.email.trim() || !d.password) { this.setState({ authMsg: fr ? 'Email et mot de passe requis.' : 'Email and password required.' }); return; }
       this.setState({ authLoading: true, authMsg: '' });
-      const { data, error } = await db.auth.signInWithPassword({ email: d.email, password: d.password });
-      this.setState({ authLoading: false });
-      if (error) {
-        let msg = fr ? 'Email ou mot de passe incorrect.' : 'Incorrect email or password.';
-        if (error.message.toLowerCase().includes('email not confirmed') || error.message.toLowerCase().includes('not confirmed')) {
-          msg = fr ? 'Veuillez confirmer votre email avant de vous connecter. Vérifiez votre boîte mail.' : 'Please confirm your email before logging in. Check your inbox.';
+      try {
+        const { data, error } = await db.auth.signInWithPassword({ email: d.email, password: d.password });
+        this.setState({ authLoading: false });
+        if (error) {
+          const raw = parseErr(error).toLowerCase();
+          let msg = fr ? 'Email ou mot de passe incorrect.' : 'Incorrect email or password.';
+          if (raw.includes('not confirmed') || raw.includes('email not confirmed')) {
+            msg = fr ? 'Confirmez votre email avant de vous connecter. Vérifiez votre boîte mail.' : 'Please confirm your email first. Check your inbox.';
+          }
+          this.setState({ authMsg: msg }); return;
         }
-        this.setState({ authMsg: msg }); return;
+        this.setState({ authUser: data.user });
+        if (data.user && data.user.email === 'admin@gmail.com') { this.openAdmin(); return; }
+        this.closeAuth();
+      } catch (e) {
+        this.setState({ authLoading: false, authMsg: fr ? 'Erreur réseau. Vérifiez votre connexion.' : 'Network error. Check your connection.' });
       }
-      this.setState({ authUser: data.user });
-      if (data.user && data.user.email === 'admin@gmail.com') { this.openAdmin(); return; }
-      this.closeAuth();
       return;
     }
   }
@@ -1735,12 +1751,14 @@ class Component extends DCLogic {
     const email = this.state.verifyEmail;
     if (!email) return;
     this.setState({ authLoading: true, verifyCode: '' });
-    const { error } = await db.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
-    this.setState({ authLoading: false });
-    if (error) {
-      this.showToast('Impossible d\'envoyer le code. Réessayez.', 'error');
-    } else {
-      this.showToast('Nouveau code envoyé à ' + email, 'success');
+    try {
+      const { error } = await db.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
+      this.setState({ authLoading: false });
+      if (error) { this.showToast('Impossible d\'envoyer le code. Réessayez.', 'error'); }
+      else        { this.showToast('Nouveau code envoyé à ' + email, 'success'); }
+    } catch (e) {
+      this.setState({ authLoading: false });
+      this.showToast('Erreur réseau. Vérifiez votre connexion.', 'error');
     }
   }
 
@@ -1750,14 +1768,19 @@ class Component extends DCLogic {
     const email = this.state.verifyEmail;
     if (!code) return;
     this.setState({ authLoading: true });
-    const { error } = await db.auth.verifyOtp({ email, token: code, type: 'email' });
-    this.setState({ authLoading: false });
-    if (error) {
-      this.showToast('Code incorrect. Vérifiez le code reçu par email.', 'error');
-      return;
+    try {
+      const { error } = await db.auth.verifyOtp({ email, token: code, type: 'email' });
+      this.setState({ authLoading: false });
+      if (error) {
+        this.showToast('Code incorrect. Vérifiez le code reçu par email.', 'error');
+        return;
+      }
+      this.closeAuth();
+      this.showToast('Vérification Confirmée — Bienvenue !', 'success');
+    } catch (e) {
+      this.setState({ authLoading: false });
+      this.showToast('Erreur réseau. Vérifiez votre connexion.', 'error');
     }
-    this.closeAuth();
-    this.showToast('Vérification Confirmée — Bienvenue !', 'success');
   }
 
   openAccount() { this.setState({ accountView: true }); document.body.style.overflow = 'hidden'; }
