@@ -1660,7 +1660,13 @@ class Component extends DCLogic {
       this.setState({ authLoading: true, authMsg: '' });
       const { data, error } = await db.auth.signInWithPassword({ email: d.email, password: d.password });
       this.setState({ authLoading: false });
-      if (error) { this.setState({ authMsg: fr ? 'Email ou mot de passe incorrect.' : 'Incorrect email or password.' }); return; }
+      if (error) {
+        let msg = fr ? 'Email ou mot de passe incorrect.' : 'Incorrect email or password.';
+        if (error.message.toLowerCase().includes('email not confirmed') || error.message.toLowerCase().includes('not confirmed')) {
+          msg = fr ? 'Veuillez confirmer votre email avant de vous connecter. Vérifiez votre boîte mail.' : 'Please confirm your email before logging in. Check your inbox.';
+        }
+        this.setState({ authMsg: msg }); return;
+      }
       this.setState({ authUser: data.user });
       if (data.user && data.user.email === 'admin@gmail.com') { this.openAdmin(); return; }
       this.closeAuth();
