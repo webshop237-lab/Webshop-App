@@ -1869,8 +1869,18 @@ class Component extends DCLogic {
     this.mutate(d => { d[coll] = d[coll].filter(x => x.id !== id); });
     db.from(coll).delete().eq('id', id).then(({error}) => { if(error) console.warn('Supabase delete failed', error); });
   }
-  toggleField(coll, id, field) { this.mutate(d => { const it = d[coll].find(x => x.id === id); if (it) it[field] = !it[field]; }); }
-  setSetting(k, v) { this.mutate(d => { d.settings[k] = v; }); }
+  toggleField(coll, id, field) {
+    let newVal;
+    this.mutate(d => { const it = d[coll].find(x => x.id === id); if (it) { it[field] = !it[field]; newVal = it[field]; } });
+    if (newVal !== undefined) {
+      const patch = {}; patch[field] = newVal;
+      db.from(coll).update(patch).eq('id', id).then(({error}) => { if (error) console.warn('Supabase toggleField failed', error); });
+    }
+  }
+  setSetting(k, v) {
+    this.mutate(d => { d.settings[k] = v; });
+    db.from('site_settings').upsert({ key: k, value: v }).then(({error}) => { if (error) console.warn('Supabase setSetting failed', error); });
+  }
   blankEntity(type) {
     if (type === 'vehicle') return { id:0, name:'', year:2010, plate:'', fuel:'Essence', trans:'Manuelle', seats:5, priceDla:0, priceOut:0, available:true, img:'' };
     if (type === 'product') return { id:0, cat:'chaussures', name:'', price:0, img:'' };
