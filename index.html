@@ -1078,6 +1078,35 @@
           </div>
         </sc-if>
 
+        <!-- USERS -->
+        <sc-if value="{{ secUsers }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-bottom:16px; display:flex; align-items:center; gap:12px;">
+            <span style="font-family:'Geist Mono',monospace; font-size:11px; color:#8a8377; letter-spacing:0.06em;">{{ userCount }} COMPTE(S) INSCRIT(S)</span>
+          </div>
+          <table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
+            <thead><tr>
+              <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Nom</th>
+              <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Email</th>
+              <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Téléphone</th>
+              <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Inscription</th>
+              <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Actions</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{ userRows }}" as="u" hint-placeholder-count="2">
+                <tr>
+                  <td style="padding:13px 16px; font-size:14px; border-bottom:1px solid #f1ede6; font-weight:600;">{{ u.name }}</td>
+                  <td style="padding:13px 16px; font-size:13px; border-bottom:1px solid #f1ede6; color:#4a4843; font-family:'Geist Mono',monospace;">{{ u.email }}</td>
+                  <td style="padding:13px 16px; font-size:14px; border-bottom:1px solid #f1ede6; color:#6a665e;">{{ u.phone }}</td>
+                  <td style="padding:13px 16px; font-size:13px; border-bottom:1px solid #f1ede6; color:#9a958c; font-family:'Geist Mono',monospace;">{{ u.joinDate }}</td>
+                  <td style="padding:13px 16px; border-bottom:1px solid #f1ede6;">
+                    <button onClick="{{ u.del }}" style="padding:7px 12px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid #f1c4d6; background:#fff; color:#d11a6b; font-family:inherit;">Supprimer</button>
+                  </td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </sc-if>
+
         <!-- SETTINGS -->
         <sc-if value="{{ secSettings }}" hint-placeholder-val="{{ false }}">
           <div style="background:#fff; border:1px solid #e9e4dc; border-radius:14px; padding:28px; max-width:620px;">
@@ -1808,6 +1837,7 @@ class Component extends DCLogic {
       vehicles: VEHICLES.map(v => ({ ...v })),
       products: PRODUCTS.map(p => ({ ...p })),
       testimonials: TESTIMONIALS.map((tt, i) => ({ id:5000+i, name:tt.name, city:tt.city, stars:tt.stars, fr:tt.fr, en:tt.en, visible:true })),
+      users: [],
       settings: { phone:'+237 651 41 06 87', email:'webshop237@gmail.com', address:'Bonamoussadi, en face du Petit Terrain, Douala – Cameroun', facebook:'https://www.facebook.com/webshop237', instagram:'https://www.instagram.com/websh_op237', tiktok:'https://www.tiktok.com/@webshop237', whatsapp:'https://wa.me/237651410687' }
     };
   }
@@ -1817,7 +1847,7 @@ class Component extends DCLogic {
     if (!data) { data = this.seedAdmin(); }
     this.setState({ adminData: data });
     try {
-      const [req, bk, ord, qt, veh, prod, test, sets] = await Promise.all([
+      const [req, bk, ord, qt, veh, prod, test, sets, usr] = await Promise.all([
         db.from('requests').select('*').order('created_at',{ascending:false}).limit(500),
         db.from('bookings').select('*').order('created_at',{ascending:false}).limit(500),
         db.from('orders').select('*').order('created_at',{ascending:false}).limit(500),
@@ -1825,7 +1855,8 @@ class Component extends DCLogic {
         db.from('vehicles').select('*').order('id',{ascending:true}),
         db.from('products').select('*').order('id',{ascending:true}),
         db.from('testimonials').select('*').order('id',{ascending:true}),
-        db.from('site_settings').select('*')
+        db.from('site_settings').select('*'),
+        db.from('profiles').select('id, name, email, phone, created_at').order('created_at',{ascending:false}).limit(1000)
       ]);
       const pick = (res, coll, fallback) => {
         if (res.error) { console.warn('Supabase error on ' + coll + ':', res.error.message); return fallback; }
@@ -1839,6 +1870,7 @@ class Component extends DCLogic {
         vehicles:     pick(veh,  'vehicles',     data.vehicles),
         products:     pick(prod, 'products',     data.products),
         testimonials: pick(test, 'testimonials', data.testimonials),
+        users:        usr.error ? [] : (usr.data || []),
         settings: (!sets.error && sets.data && sets.data.length)
           ? Object.fromEntries(sets.data.map(s => [s.key, s.value]))
           : data.settings
@@ -1868,6 +1900,10 @@ class Component extends DCLogic {
   removeItem(coll, id) {
     this.mutate(d => { d[coll] = d[coll].filter(x => x.id !== id); });
     db.from(coll).delete().eq('id', id).then(({error}) => { if(error) console.warn('Supabase delete failed', error); });
+  }
+  deleteUser(id) {
+    this.mutate(d => { d.users = (d.users || []).filter(x => x.id !== id); });
+    db.from('profiles').delete().eq('id', id).then(({error}) => { if (error) console.warn('Supabase delete user failed', error); });
   }
   toggleField(coll, id, field) {
     let newVal;
@@ -2075,7 +2111,8 @@ class Component extends DCLogic {
     const adminMenu = [
       { key:'dashboard', label:'Tableau de bord' }, { key:'requests', label:'Demandes' }, { key:'bookings', label:'Réservations' },
       { key:'orders', label:'Commandes' }, { key:'quotes', label:'Devis' }, { key:'vehicles', label:'Véhicules' },
-      { key:'products', label:'Produits' }, { key:'testimonials', label:'Témoignages' }, { key:'settings', label:'Paramètres' }
+      { key:'products', label:'Produits' }, { key:'testimonials', label:'Témoignages' },
+      { key:'users', label:'Utilisateurs' }, { key:'settings', label:'Paramètres' }
     ].map(m => ({ ...m, active: adminSection === m.key, onClick: () => this.setAdminSection(m.key),
       style: 'display:block; width:100%; text-align:left; border:none; cursor:pointer; padding:11px 16px; border-radius:10px; font-family:inherit; font-size:14px; font-weight:500; margin-bottom:2px; transition:0.15s; ' + (adminSection === m.key ? 'background:#0A0A0A; color:#fff;' : 'background:transparent; color:#52504a;') }));
     const reqRows = (ad ? ad.requests : []).map(r => ({ ...r, serviceLabel: svcLabels[r.service] || r.service, statusStyle: pill(r.status), markDone: () => this.setStatus('requests', r.id, 'traité'), markNew: () => this.setStatus('requests', r.id, 'nouveau'), del: () => this.removeItem('requests', r.id), wa: 'https://wa.me/237651410687?text=' + encodeURIComponent('Bonjour ' + r.prenom + ', concernant votre demande WEBSHOP.') }));
@@ -2219,8 +2256,11 @@ class Component extends DCLogic {
       secVehicles: adminSection === 'vehicles',
       secProducts: adminSection === 'products',
       secTestimonials: adminSection === 'testimonials',
+      secUsers: adminSection === 'users',
       secSettings: adminSection === 'settings',
       adminMenu, reqRows, bookRows, orderRows, quoteRows, vehRows, prodRows, testRows, stats, recentReq, settings,
+      userRows: (ad ? ad.users : []).map(u => ({ ...u, joinDate: u.created_at ? u.created_at.slice(0,10) : '—', del: () => this.deleteUser(u.id) })),
+      userCount: ad ? (ad.users || []).length : 0,
       closeAdmin: () => this.closeAdmin(),
       addVehicle: () => this.startEdit('vehicle', null),
       addProduct: () => this.startEdit('product', null),
