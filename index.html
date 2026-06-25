@@ -1166,10 +1166,7 @@
                 <a href="https://wa.me/237651410687" target="_blank" style="color: #FF007F; text-decoration: none;">{{ t.auth.forgot }}</a>
               </div>
             </sc-if>
-            <button type="submit" style="width: 100%; background: #FF007F; color: #fff; border: none; padding: 16px; border-radius: 10px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s;" style-hover="background: #ff2a92;">
-              <sc-if value="{{ isSignup }}" hint-placeholder-val="{{ false }}">{{ t.auth.signupBtn }}</sc-if>
-              <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">{{ t.auth.loginBtn }}</sc-if>
-            </button>
+            <button type="submit" style="width: 100%; background: #FF007F; color: #fff; border: none; padding: 16px; border-radius: 10px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s;" style-hover="background: #ff2a92;">{{ authBtnLabel }}</button>
           </form>
 
           <div style="display: flex; align-items: center; gap: 16px; margin: 26px 0;">
@@ -1517,6 +1514,8 @@ class Component extends DCLogic {
     authData: { name:'', email:'', phone:'', password:'', confirm:'' },
     authShowPw: false,
     authMsg: '',
+    authLoading: false,
+    authUser: null,
     menuOpen: false,
     faqOpen: 0,
     adminView: false,
@@ -1526,6 +1525,13 @@ class Component extends DCLogic {
   };
 
   componentDidMount() {
+    db.auth.getSession().then(({ data: { session } }) => {
+      if (session) this.setState({ authUser: session.user });
+    });
+    this.authSub = db.auth.onAuthStateChange((_event, session) => {
+      this.setState({ authUser: session ? session.user : null });
+      if (_event === 'SIGNED_OUT') this.setState({ adminView: false });
+    });
     const start = Date.now();
     const dur = 2200;
     this.loadTimer = setInterval(() => {
@@ -1558,7 +1564,7 @@ class Component extends DCLogic {
       this.setState(s => ({ landingIdx: (s.landingIdx + 1) % LANDING_SLIDES.length }));
     }, 3000);
   }
-  componentWillUnmount() { clearInterval(this.testTimer); clearInterval(this.landingTimer); clearInterval(this.loadTimer); window.removeEventListener('scroll', this.onScroll); }
+  componentWillUnmount() { clearInterval(this.testTimer); clearInterval(this.landingTimer); clearInterval(this.loadTimer); window.removeEventListener('scroll', this.onScroll); if (this.authSub) this.authSub.data.subscription.unsubscribe(); }
 
   setLang(lang) { this.setState({ lang }); }
   setHero(h) { this.setState({ hero: h }); }
@@ -1575,23 +1581,50 @@ class Component extends DCLogic {
     e.preventDefault();
     const au = STR[this.state.lang].auth;
     const d = this.state.authData;
-    if (this.state.authView === 'login') {
-      this.setState({ authMsg: '' });
-      const { data, error } = await db.auth.signInWithPassword({ email: d.email, password: d.password });
+    const lang = this.state.lang;
+    const fr = lang === 'fr';
+
+    if (this.state.authView === 'signup') {
+      if (!d.name.trim())      { this.setState({ authMsg: fr ? 'Nom complet requis.' : 'Full name required.' }); return; }
+      if (!d.email.trim())     { this.setState({ authMsg: fr ? 'Email requis.' : 'Email required.' }); return; }
+      if (d.password.length < 6) { this.setState({ authMsg: fr ? 'Mot de passe : 6 caractères minimum.' : 'Password: at least 6 characters.' }); return; }
+      if (d.password !== d.confirm) { this.setState({ authMsg: au.mismatch }); return; }
+      this.setState({ authLoading: true, authMsg: '' });
+      const { data, error } = await db.auth.signUp({
+        email: d.email,
+        password: d.password,
+        options: { data: { name: d.name.trim(), phone: d.phone.trim() } }
+      });
+      this.setState({ authLoading: false });
       if (error) {
-        this.setState({ authMsg: this.state.lang === 'fr' ? 'Email ou mot de passe incorrect.' : 'Incorrect email or password.' });
-        return;
+        const msg = error.message.includes('already registered')
+          ? (fr ? 'Cet email est déjà utilisé.' : 'This email is already registered.')
+          : error.message;
+        this.setState({ authMsg: msg }); return;
       }
+      this.setState({ authUser: data.user, authMsg: au.signupOk });
+      setTimeout(() => this.closeAuth(), 2500);
+      return;
+    }
+
+    if (this.state.authView === 'login') {
+      if (!d.email.trim() || !d.password) { this.setState({ authMsg: fr ? 'Email et mot de passe requis.' : 'Email and password required.' }); return; }
+      this.setState({ authLoading: true, authMsg: '' });
+      const { data, error } = await db.auth.signInWithPassword({ email: d.email, password: d.password });
+      this.setState({ authLoading: false });
+      if (error) { this.setState({ authMsg: fr ? 'Email ou mot de passe incorrect.' : 'Incorrect email or password.' }); return; }
+      this.setState({ authUser: data.user });
       if (data.user && data.user.email === 'admin@gmail.com') { this.openAdmin(); return; }
       this.setState({ authMsg: au.loginOk });
-      this.closeAuth();
+      setTimeout(() => this.closeAuth(), 1500);
       return;
     }
-    if (this.state.authView === 'signup' && d.password && d.confirm && d.password !== d.confirm) {
-      this.setState({ authMsg: au.mismatch });
-      return;
-    }
-    this.setState({ authMsg: au.signupOk });
+  }
+
+  async signOut() {
+    await db.auth.signOut();
+    this.setState({ authUser: null, adminView: false, adminData: null });
+    document.body.style.overflow = '';
   }
 
   // ── ADMIN ──
@@ -1955,6 +1988,12 @@ class Component extends DCLogic {
       authSub: isSignup ? au.signupSub : au.loginSub,
       authData: this.state.authData,
       authMsg: this.state.authMsg,
+      authLoading: this.state.authLoading,
+      authIdle: !this.state.authLoading,
+      authUser: this.state.authUser,
+      isLoggedIn: !!this.state.authUser,
+      authUserName: this.state.authUser ? (this.state.authUser.user_metadata?.name || this.state.authUser.email) : '',
+      authBtnLabel: this.state.authLoading ? '…' : (isSignup ? au.signupBtn : au.loginBtn),
       pwType: this.state.authShowPw ? 'text' : 'password',
       pwToggleLabel: this.state.authShowPw ? au.hide : au.show,
       openLogin: () => this.openAuth('login'),
@@ -1964,6 +2003,7 @@ class Component extends DCLogic {
       switchToSignup: () => this.setState({ authView: 'signup', authMsg: '' }),
       togglePw: () => this.setState(s => ({ authShowPw: !s.authShowPw })),
       submitAuth: (e) => this.submitAuth(e),
+      signOut: () => this.signOut(),
       onAuthName: (e) => this.updateAuth('name', e.target.value),
       onAuthEmail: (e) => this.updateAuth('email', e.target.value),
       onAuthPhone: (e) => this.updateAuth('phone', e.target.value),
