@@ -106,6 +106,35 @@
   @media (max-width: 640px) {
     #pricing, #faq { padding-top: 64px !important; padding-bottom: 64px !important; }
   }
+
+  /* ═══ ADMIN PANEL RESPONSIVE ═══ */
+  .admin-sidebar { transition: transform 0.25s ease; }
+  .admin-toggle { display: none; align-items: center; justify-content: center; width: 38px; height: 38px; border: 1px solid #e9e4dc; border-radius: 9px; background: #fff; cursor: pointer; flex-shrink: 0; }
+  .admin-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 440; }
+  .admin-table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 14px; }
+  .admin-table-scroll table { min-width: 560px; }
+
+  @media (max-width: 1100px) {
+    .admin-sidebar { width: 210px !important; padding: 20px 12px !important; }
+    .admin-main { padding: 24px 20px !important; }
+  }
+  @media (max-width: 768px) {
+    .admin-sidebar {
+      position: fixed !important; left: 0; top: 0; bottom: 0;
+      z-index: 450; width: 260px !important;
+      transform: translateX(-100%);
+      box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+    }
+    .admin-sidebar-open { transform: translateX(0) !important; }
+    .admin-overlay-open { display: block; }
+    .admin-main { padding: 16px 14px !important; }
+    .admin-toggle { display: flex !important; }
+    .admin-main h1 { font-size: 22px !important; }
+  }
+  @media (max-width: 480px) {
+    .admin-main { padding: 12px 10px !important; }
+    .admin-table-scroll table { min-width: 480px; }
+  }
 </style>
 </helmet>
 
@@ -830,8 +859,11 @@
   <!-- ════════ ADMIN DASHBOARD ════════ -->
   <sc-if value="{{ adminOpen }}" hint-placeholder-val="{{ false }}">
     <div style="position: fixed; inset: 0; z-index: 320; background: #F5F2EE; color: #1a1a1a; display: flex; font-family: 'Geist', sans-serif;">
+      <!-- Overlay mobile -->
+      <div class="{{ adminOverlayClass }}" onClick="{{ closeAdminSidebar }}"></div>
+
       <!-- Sidebar -->
-      <aside style="width: 264px; flex-shrink: 0; background: #fff; border-right: 1px solid #e9e4dc; padding: 24px 16px; display: flex; flex-direction: column; overflow: auto;">
+      <aside class="{{ adminSidebarClass }}" style="width: 264px; flex-shrink: 0; background: #fff; border-right: 1px solid #e9e4dc; padding: 24px 16px; display: flex; flex-direction: column; overflow: auto;">
         <div style="display: flex; align-items: center; gap: 10px; padding: 0 8px 20px; margin-bottom: 12px; border-bottom: 1px solid #efeae2;">
           <img src="uploads/PNG 222.png" alt="WEBSHOP" style="width: 40px; height: 40px; object-fit: contain;">
           <span style="display: flex; flex-direction: column; line-height: 1;">
@@ -848,9 +880,14 @@
       </aside>
 
       <!-- Main -->
-      <main style="flex: 1; overflow: auto; padding: 32px 36px;">
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 28px; flex-wrap: wrap;">
-          <h1 style="font-size: 30px; font-weight: 600; letter-spacing: -0.02em; margin: 0;">Espace administrateur</h1>
+      <main class="admin-main" style="flex: 1; overflow: auto; padding: 32px 36px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 28px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <button class="admin-toggle" onClick="{{ toggleAdminSidebar }}">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect y="3" width="18" height="2" rx="1" fill="#333"/><rect y="8" width="18" height="2" rx="1" fill="#333"/><rect y="13" width="18" height="2" rx="1" fill="#333"/></svg>
+            </button>
+            <h1 style="font-size: 30px; font-weight: 600; letter-spacing: -0.02em; margin: 0;">Espace administrateur</h1>
+          </div>
           <div style="display: inline-flex; align-items: center; gap: 8px; background: #fff; border: 1px solid #e9e4dc; padding: 8px 14px; border-radius: 999px; font-family: 'Geist Mono', monospace; font-size: 11px; color: #8a8377; letter-spacing: 0.06em;"><span style="width: 7px; height: 7px; border-radius: 999px; background: #1f8a5b;"></span> DONNÉES WEB</div>
         </div>
 
@@ -890,7 +927,7 @@
 
         <!-- REQUESTS -->
         <sc-if value="{{ secRequests }}" hint-placeholder-val="{{ false }}">
-          <table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
+          <div class="admin-table-scroll"><table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
             <thead><tr>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Client</th>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Service</th>
@@ -912,12 +949,12 @@
                 </tr>
               </sc-for>
             </tbody>
-          </table>
+          </table></div>
         </sc-if>
 
         <!-- BOOKINGS -->
         <sc-if value="{{ secBookings }}" hint-placeholder-val="{{ false }}">
-          <table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
+          <div class="admin-table-scroll"><table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
             <thead><tr>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Client</th>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Véhicule</th>
@@ -941,12 +978,12 @@
                 </tr>
               </sc-for>
             </tbody>
-          </table>
+          </table></div>
         </sc-if>
 
         <!-- ORDERS -->
         <sc-if value="{{ secOrders }}" hint-placeholder-val="{{ false }}">
-          <table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
+          <div class="admin-table-scroll"><table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
             <thead><tr>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Client</th>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Produit</th>
@@ -970,12 +1007,12 @@
                 </tr>
               </sc-for>
             </tbody>
-          </table>
+          </table></div>
         </sc-if>
 
         <!-- QUOTES -->
         <sc-if value="{{ secQuotes }}" hint-placeholder-val="{{ false }}">
-          <table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
+          <div class="admin-table-scroll"><table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
             <thead><tr>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Client</th>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Type</th>
@@ -999,13 +1036,13 @@
                 </tr>
               </sc-for>
             </tbody>
-          </table>
+          </table></div>
         </sc-if>
 
         <!-- VEHICLES -->
         <sc-if value="{{ secVehicles }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex; justify-content:flex-end; margin-bottom:16px;"><button onClick="{{ addVehicle }}" style="background:#FF007F; color:#fff; border:none; padding:11px 18px; border-radius:10px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer;">+ Ajouter un véhicule</button></div>
-          <table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
+          <div class="admin-table-scroll"><table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
             <thead><tr>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Véhicule</th>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Plaque</th>
@@ -1028,13 +1065,13 @@
                 </tr>
               </sc-for>
             </tbody>
-          </table>
+          </table></div>
         </sc-if>
 
         <!-- PRODUCTS -->
         <sc-if value="{{ secProducts }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex; justify-content:flex-end; margin-bottom:16px;"><button onClick="{{ addProduct }}" style="background:#FF007F; color:#fff; border:none; padding:11px 18px; border-radius:10px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer;">+ Ajouter un produit</button></div>
-          <table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
+          <div class="admin-table-scroll"><table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
             <thead><tr>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Produit</th>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Catégorie</th>
@@ -1054,7 +1091,7 @@
                 </tr>
               </sc-for>
             </tbody>
-          </table>
+          </table></div>
         </sc-if>
 
         <!-- TESTIMONIALS -->
@@ -1083,7 +1120,7 @@
           <div style="margin-bottom:16px; display:flex; align-items:center; gap:12px;">
             <span style="font-family:'Geist Mono',monospace; font-size:11px; color:#8a8377; letter-spacing:0.06em;">{{ userCount }} COMPTE(S) INSCRIT(S)</span>
           </div>
-          <table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
+          <div class="admin-table-scroll"><table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
             <thead><tr>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Nom</th>
               <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Email</th>
@@ -1104,7 +1141,7 @@
                 </tr>
               </sc-for>
             </tbody>
-          </table>
+          </table></div>
         </sc-if>
 
         <!-- SETTINGS -->
@@ -1649,6 +1686,7 @@ class Component extends DCLogic {
     faqOpen: 0,
     adminView: false,
     adminSection: 'dashboard',
+    adminSidebarOpen: false,
     adminData: null,
     adminEdit: null
   };
@@ -1901,7 +1939,7 @@ class Component extends DCLogic {
     document.body.style.overflow = 'hidden';
   }
   closeAdmin() { this.setState({ adminView:false, adminEdit:null }); document.body.style.overflow = ''; }
-  setAdminSection(s) { this.setState({ adminSection:s, adminEdit:null }); }
+  setAdminSection(s) { this.setState({ adminSection:s, adminEdit:null, adminSidebarOpen: false }); }
   setStatus(coll, id, status) {
     this.mutate(d => { const it = d[coll].find(x => x.id === id); if (it) it.status = status; });
     db.from(coll).update({ status }).eq('id', id).then(({error}) => { if(error) console.warn('Supabase update status failed', error); });
@@ -2275,6 +2313,10 @@ class Component extends DCLogic {
       userRows: (ad ? ad.users : []).map(u => ({ ...u, joinDate: u.created_at ? u.created_at.slice(0,10) : '—', del: () => this.deleteUser(u.id) })),
       userCount: ad ? (ad.users || []).length : 0,
       closeAdmin: () => this.closeAdmin(),
+      adminSidebarClass: 'admin-sidebar' + (this.state.adminSidebarOpen ? ' admin-sidebar-open' : ''),
+      adminOverlayClass: 'admin-overlay' + (this.state.adminSidebarOpen ? ' admin-overlay-open' : ''),
+      toggleAdminSidebar: () => this.setState(s => ({ adminSidebarOpen: !s.adminSidebarOpen })),
+      closeAdminSidebar: () => this.setState({ adminSidebarOpen: false }),
       addVehicle: () => this.startEdit('vehicle', null),
       addProduct: () => this.startEdit('product', null),
       addTestimonial: () => this.startEdit('testimonial', null),
