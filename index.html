@@ -1128,7 +1128,10 @@
           <h2 style="font-size: 34px; line-height: 1.05; letter-spacing: -0.02em; font-weight: 600; margin: 0 0 10px; color: #fff;">{{ authTitle }}</h2>
           <p style="font-size: 15px; color: rgba(255,255,255,0.55); margin: 0 0 30px;">{{ authSub }}</p>
 
-          <sc-if value="{{ authMsg }}" hint-placeholder-val="{{ false }}">
+          <sc-if value="{{ authMsgIsError }}" hint-placeholder-val="{{ false }}">
+            <div style="background: rgba(255,59,48,0.1); border: 1px solid rgba(255,59,48,0.35); color: #ff6b6b; border-radius: 10px; padding: 14px 16px; font-size: 14px; margin-bottom: 24px;">{{ authMsg }}</div>
+          </sc-if>
+          <sc-if value="{{ authMsgIsSuccess }}" hint-placeholder-val="{{ false }}">
             <div style="background: rgba(0,255,133,0.1); border: 1px solid rgba(0,255,133,0.3); color: #9affc4; border-radius: 10px; padding: 14px 16px; font-size: 14px; margin-bottom: 24px;">{{ authMsg }}</div>
           </sc-if>
 
@@ -1514,6 +1517,7 @@ class Component extends DCLogic {
     authData: { name:'', email:'', phone:'', password:'', confirm:'' },
     authShowPw: false,
     authMsg: '',
+    authMsgType: 'error',
     authLoading: false,
     authUser: null,
     menuOpen: false,
@@ -1573,8 +1577,8 @@ class Component extends DCLogic {
   setCat(c) { this.setState({ galleryCat: c }); }
   setTest(i) { this.setState({ testIdx: i }); }
 
-  openAuth(v) { this.setState({ authView: v, authMsg: '', menuOpen: false }); document.body.style.overflow = 'hidden'; }
-  closeAuth() { this.setState({ authView: null, authMsg: '' }); document.body.style.overflow = ''; }
+  openAuth(v) { this.setState({ authView: v, authMsg: '', authMsgType: 'error', menuOpen: false }); document.body.style.overflow = 'hidden'; }
+  closeAuth() { this.setState({ authView: null, authMsg: '', authMsgType: 'error' }); document.body.style.overflow = ''; }
   toggleFaq(i) { this.setState(s => ({ faqOpen: s.faqOpen === i ? null : i })); }
   updateAuth(f, v) { this.setState(s => ({ authData: { ...s.authData, [f]: v } })); }
   async submitAuth(e) {
@@ -1602,7 +1606,7 @@ class Component extends DCLogic {
           : error.message;
         this.setState({ authMsg: msg }); return;
       }
-      this.setState({ authUser: data.user, authMsg: au.signupOk });
+      this.setState({ authUser: data.user, authMsg: au.signupOk, authMsgType: 'success' });
       setTimeout(() => this.closeAuth(), 2500);
       return;
     }
@@ -1615,7 +1619,7 @@ class Component extends DCLogic {
       if (error) { this.setState({ authMsg: fr ? 'Email ou mot de passe incorrect.' : 'Incorrect email or password.' }); return; }
       this.setState({ authUser: data.user });
       if (data.user && data.user.email === 'admin@gmail.com') { this.openAdmin(); return; }
-      this.setState({ authMsg: au.loginOk });
+      this.setState({ authMsg: au.loginOk, authMsgType: 'success' });
       setTimeout(() => this.closeAuth(), 1500);
       return;
     }
@@ -1988,6 +1992,8 @@ class Component extends DCLogic {
       authSub: isSignup ? au.signupSub : au.loginSub,
       authData: this.state.authData,
       authMsg: this.state.authMsg,
+      authMsgIsError: !!this.state.authMsg && this.state.authMsgType === 'error',
+      authMsgIsSuccess: !!this.state.authMsg && this.state.authMsgType === 'success',
       authLoading: this.state.authLoading,
       authIdle: !this.state.authLoading,
       authUser: this.state.authUser,
@@ -1999,8 +2005,8 @@ class Component extends DCLogic {
       openLogin: () => this.openAuth('login'),
       openSignup: () => this.openAuth('signup'),
       closeAuth: () => this.closeAuth(),
-      switchToLogin: () => this.setState({ authView: 'login', authMsg: '' }),
-      switchToSignup: () => this.setState({ authView: 'signup', authMsg: '' }),
+      switchToLogin: () => this.setState({ authView: 'login', authMsg: '', authMsgType: 'error' }),
+      switchToSignup: () => this.setState({ authView: 'signup', authMsg: '', authMsgType: 'error' }),
       togglePw: () => this.setState(s => ({ authShowPw: !s.authShowPw })),
       submitAuth: (e) => this.submitAuth(e),
       signOut: () => this.signOut(),
