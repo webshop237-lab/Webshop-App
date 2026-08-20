@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://webshop237.com/sitemap.xml
