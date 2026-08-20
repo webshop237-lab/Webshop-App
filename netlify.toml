@@ -6,3 +6,14 @@ publish = "."
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Le dossier publie etant la racine du depot, les migrations SQL seraient
+# servies telles quelles et revelerait le schema et le nom des policies.
+# force est indispensable : sans lui, un fichier existant a priorite sur la
+# regle et le SQL serait servi malgre tout.
+[[redirects]]
+  from = "/supabase/*"
+  to = "/index.html"
+  status = 404
+  force = true
