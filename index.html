@@ -247,8 +247,8 @@
   <!-- TICKER -->
   <div style="background: #FF007F; color: #fff; font-size: 12px; font-family: 'Geist Mono', monospace; letter-spacing: 0.04em; padding: 8px 0; overflow: hidden; white-space: nowrap;">
     <div style="display: inline-flex; gap: 48px; animation: wsMarquee 40s linear infinite; padding-right: 48px;">
-      <span>★ DOUALA · BONAMOUSSADI</span><span>★ DÉPANNAGE INFORMATIQUE 7J/7</span><span>★ LOCATION VÉHICULES VIP</span><span>★ BOUTIQUE DE LUXE</span><span>★ SECRÉTARIAT PROFESSIONNEL</span><span>★ +237 651 41 06 87</span>
-      <span>★ DOUALA · BONAMOUSSADI</span><span>★ DÉPANNAGE INFORMATIQUE 7J/7</span><span>★ LOCATION VÉHICULES VIP</span><span>★ BOUTIQUE DE LUXE</span><span>★ SECRÉTARIAT PROFESSIONNEL</span><span>★ +237 651 41 06 87</span>
+      <span>★ DOUALA · BONAMOUSSADI</span><span>★ DÉPANNAGE INFORMATIQUE 7J/7</span><span>★ LOCATION VÉHICULES VIP</span><span>★ BOUTIQUE DE LUXE</span><span>★ SECRÉTARIAT PROFESSIONNEL</span><span>★ {{ sitePhone }}</span>
+      <span>★ DOUALA · BONAMOUSSADI</span><span>★ DÉPANNAGE INFORMATIQUE 7J/7</span><span>★ LOCATION VÉHICULES VIP</span><span>★ BOUTIQUE DE LUXE</span><span>★ SECRÉTARIAT PROFESSIONNEL</span><span>★ {{ sitePhone }}</span>
     </div>
   </div>
 
@@ -409,7 +409,7 @@
           <p style="font-size: 18px; line-height: 1.5; color: rgba(255,255,255,0.65); max-width: 540px; margin: 0 0 40px;">{{ t.hero.subtitle }}</p>
           <div style="display: flex; gap: 12px; flex-wrap: wrap;">
             <a href="#services" style="display: inline-flex; align-items: center; gap: 10px; background: #fff; color: #0A0A0A; text-decoration: none; padding: 16px 24px; border-radius: 999px; font-weight: 500; font-size: 15px;" style-hover="background: #FF007F; color: #fff;">{{ t.hero.cta1 }} <span>→</span></a>
-            <a href="https://wa.me/237651410687?text=Bonjour%20WEBSHOP" target="_blank" style="display: inline-flex; align-items: center; gap: 10px; background: transparent; color: #fff; text-decoration: none; padding: 16px 24px; border-radius: 999px; font-weight: 500; font-size: 15px; border: 1px solid rgba(255,255,255,0.15);" style-hover="border-color: #FF007F; color: #FF007F;">{{ t.hero.cta2 }}</a>
+            <a href="{{ waHello }}" target="_blank" style="display: inline-flex; align-items: center; gap: 10px; background: transparent; color: #fff; text-decoration: none; padding: 16px 24px; border-radius: 999px; font-weight: 500; font-size: 15px; border: 1px solid rgba(255,255,255,0.15);" style-hover="border-color: #FF007F; color: #FF007F;">{{ t.hero.cta2 }}</a>
           </div>
           <div style="display: flex; gap: 48px; margin-top: 64px; padding-top: 32px; border-top: 1px solid rgba(255,255,255,0.08);">
             <div>
@@ -461,7 +461,7 @@
         <p style="font-size: 20px; line-height: 1.5; color: rgba(255,255,255,0.75); max-width: 620px; margin: 40px 0 0;">{{ t.hero.subtitle }}</p>
         <div style="display: flex; gap: 12px; margin-top: 48px; flex-wrap: wrap;">
           <a href="#services" style="display: inline-flex; align-items: center; gap: 10px; background: #FF007F; color: #fff; text-decoration: none; padding: 18px 28px; border-radius: 4px; font-weight: 500; font-size: 15px;">{{ t.hero.cta1 }} →</a>
-          <a href="https://wa.me/237651410687" target="_blank" style="display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.08); backdrop-filter: blur(20px); color: #fff; text-decoration: none; padding: 18px 28px; border-radius: 4px; font-weight: 500; font-size: 15px; border: 1px solid rgba(255,255,255,0.15);">{{ t.hero.cta2 }}</a>
+          <a href="{{ waPlain }}" target="_blank" style="display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.08); backdrop-filter: blur(20px); color: #fff; text-decoration: none; padding: 18px 28px; border-radius: 4px; font-weight: 500; font-size: 15px; border: 1px solid rgba(255,255,255,0.15);">{{ t.hero.cta2 }}</a>
         </div>
       </div>
       <div style="position: absolute; bottom: 32px; right: 40px; display: flex; gap: 32px; font-family: 'Geist Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.5); letter-spacing: 0.1em;">
@@ -484,7 +484,7 @@
           <p style="font-size: 17px; line-height: 1.55; color: rgba(255,255,255,0.6); max-width: 480px; margin: 0 0 40px;">{{ t.hero.subtitle }}</p>
           <div style="display: flex; gap: 12px; flex-wrap: wrap;">
             <a href="#services" style="display: inline-flex; align-items: center; gap: 10px; background: #fff; color: #0A0A0A; text-decoration: none; padding: 14px 22px; border-radius: 4px; font-weight: 500; font-size: 14px;">{{ t.hero.cta1 }} →</a>
-            <a href="https://wa.me/237651410687" target="_blank" style="display: inline-flex; align-items: center; gap: 10px; background: transparent; color: #fff; text-decoration: none; padding: 14px 22px; border-radius: 4px; font-weight: 500; font-size: 14px; border: 1px solid rgba(255,255,255,0.15);">{{ t.hero.cta2 }}</a>
+            <a href="{{ waPlain }}" target="_blank" style="display: inline-flex; align-items: center; gap: 10px; background: transparent; color: #fff; text-decoration: none; padding: 14px 22px; border-radius: 4px; font-weight: 500; font-size: 14px; border: 1px solid rgba(255,255,255,0.15);">{{ t.hero.cta2 }}</a>
           </div>
         </div>
         <div style="background: #FF007F; padding: 56px 48px; color: #fff; display: flex; flex-direction: column; justify-content: space-between; min-height: 540px;">
@@ -672,7 +672,7 @@
         </div>
         <div>
           <p style="font-size: 16px; line-height: 1.55; color: rgba(255,255,255,0.6); max-width: 480px; margin: 0 0 24px;">{{ t.print.lede }}</p>
-          <a href="https://wa.me/237651410687?text=Bonjour%20WEBSHOP%2C%20je%20souhaite%20un%20devis%20pour%20WEB%20PRINT" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: #FF007F; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 999px; font-size: 13px; font-weight: 500;">{{ t.print.quote }} →</a>
+          <a href="{{ waDevisPrint }}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: #FF007F; color: #fff; text-decoration: none; padding: 12px 20px; border-radius: 999px; font-size: 13px; font-weight: 500;">{{ t.print.quote }} →</a>
         </div>
       </div>
 
@@ -697,7 +697,7 @@
             <h3 style="font-size: 24px; line-height: 1.15; font-weight: 600; letter-spacing: -0.02em; margin: 0 0 12px;">{{ t.print.forfaits }}</h3>
             <p style="font-size: 14px; line-height: 1.5; opacity: 0.9; margin: 0;">{{ t.print.forfaitsDesc }}</p>
           </div>
-          <a href="https://wa.me/237651410687?text=Bonjour%20WEBSHOP%2C%20je%20souhaite%20un%20devis%20forfait" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: #fff; color: #0A0A0A; text-decoration: none; padding: 12px 18px; border-radius: 999px; font-size: 13px; font-weight: 500; align-self: flex-start;">{{ t.print.quote }} →</a>
+          <a href="{{ waDevisForfait }}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; background: #fff; color: #0A0A0A; text-decoration: none; padding: 12px 18px; border-radius: 999px; font-size: 13px; font-weight: 500; align-self: flex-start;">{{ t.print.quote }} →</a>
         </div>
       </div>
     </div>
@@ -723,7 +723,7 @@
             </sc-for>
           </div>
 
-          <a href="https://wa.me/237651410687?text=Bonjour%20WEBSHOP%2C%20je%20souhaite%20un%20devis%20pour%20un%20site%20web%20ou%20une%20application" target="_blank" style="display: inline-flex; align-items: center; gap: 10px; background: #0A0A0A; color: #fff; text-decoration: none; padding: 14px 22px; border-radius: 999px; font-size: 14px; font-weight: 500;" style-hover="background: #FF007F;">{{ t.market.cta }} →</a>
+          <a href="{{ waDevisSite }}" target="_blank" style="display: inline-flex; align-items: center; gap: 10px; background: #0A0A0A; color: #fff; text-decoration: none; padding: 14px 22px; border-radius: 999px; font-size: 14px; font-weight: 500;" style-hover="background: #FF007F;">{{ t.market.cta }} →</a>
         </div>
 
         <div style="position: relative;">
@@ -849,9 +849,9 @@
           </h2>
           <p style="font-size: 16px; line-height: 1.55; color: rgba(10,10,10,0.6); max-width: 380px; margin: 0 0 40px;">{{ t.form.sub }}</p>
           <div style="display: flex; flex-direction: column; gap: 16px;">
-            <a href="tel:+237651410687" style="display: flex; align-items: center; gap: 14px; color: #0A0A0A; text-decoration: none;">
+            <a href="{{ sitePhoneHref }}" style="display: flex; align-items: center; gap: 14px; color: #0A0A0A; text-decoration: none;">
               <span style="width: 36px; height: 36px; border-radius: 999px; background: #0A0A0A; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px;">☎</span>
-              <span><div style="font-family: 'Geist Mono', monospace; font-size: 10px; color: rgba(10,10,10,0.5); letter-spacing: 0.08em;">TÉL</div><div style="font-size: 15px; font-weight: 500;">+237 651 41 06 87</div></span>
+              <span><div style="font-family: 'Geist Mono', monospace; font-size: 10px; color: rgba(10,10,10,0.5); letter-spacing: 0.08em;">TÉL</div><div style="font-size: 15px; font-weight: 500;">{{ sitePhone }}</div></span>
             </a>
             <a href="{{ contactMailHref }}" style="display: flex; align-items: center; gap: 14px; color: #0A0A0A; text-decoration: none;">
               <span style="width: 36px; height: 36px; border-radius: 999px; background: #0A0A0A; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px;">✉</span>
@@ -859,7 +859,7 @@
             </a>
             <div style="display: flex; align-items: center; gap: 14px;">
               <span style="width: 36px; height: 36px; border-radius: 999px; background: #0A0A0A; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px;">⌖</span>
-              <span><div style="font-family: 'Geist Mono', monospace; font-size: 10px; color: rgba(10,10,10,0.5); letter-spacing: 0.08em;">ADRESSE</div><div style="font-size: 14px; font-weight: 500; line-height: 1.4;">Bonamoussadi · Petit Terrain<br>Douala – Cameroun</div></span>
+              <span><div style="font-family: 'Geist Mono', monospace; font-size: 10px; color: rgba(10,10,10,0.5); letter-spacing: 0.08em;">ADRESSE</div><div style="font-size: 14px; font-weight: 500; line-height: 1.4;">{{ siteAddress }}</div></span>
             </div>
           </div>
         </div>
@@ -1167,6 +1167,36 @@
           </table></div>
         </sc-if>
 
+        <!-- PACKAGES -->
+        <sc-if value="{{ secPackages }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex; justify-content:flex-end; margin-bottom:16px;"><button onClick="{{ addPackage }}" style="background:#FF007F; color:#fff; border:none; padding:11px 18px; border-radius:10px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer;">+ Ajouter un forfait</button></div>
+          <div class="admin-table-scroll"><table style="width:100%; border-collapse:collapse; background:#fff; border:1px solid #e9e4dc; border-radius:14px; overflow:hidden;">
+            <thead><tr>
+              <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Forfait</th>
+              <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Prix</th>
+              <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Mise en avant</th>
+              <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Affichage</th>
+              <th style="text-align:left; font-family:'Geist Mono',monospace; font-size:11px; letter-spacing:0.06em; color:#8a8377; padding:12px 16px; border-bottom:1px solid #ece8e1; font-weight:600;">Actions</th>
+            </tr></thead>
+            <tbody>
+              <sc-for list="{{ packRows }}" as="pk" hint-placeholder-count="3">
+                <tr>
+                  <td style="padding:13px 16px; font-size:14px; border-bottom:1px solid #f1ede6;"><div style="font-weight:600;">{{ pk.name_fr }}</div><div style="font-size:12px; color:#9a958c; margin-top:3px;">{{ pk.tag }} &middot; {{ pk.featCount }} avantage(s) &middot; position {{ pk.position }}</div></td>
+                  <td style="padding:13px 16px; font-size:14px; border-bottom:1px solid #f1ede6;">{{ pk.priceLabel }}</td>
+                  <td style="padding:13px 16px; border-bottom:1px solid #f1ede6;"><span style="{{ pk.popStyle }}">{{ pk.popLabel }}</span></td>
+                  <td style="padding:13px 16px; border-bottom:1px solid #f1ede6;"><span style="{{ pk.visStyle }}">{{ pk.visLabel }}</span></td>
+                  <td style="padding:13px 16px; border-bottom:1px solid #f1ede6; white-space:nowrap;">
+                    <button onClick="{{ pk.togglePop }}" style="padding:7px 12px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid #ddd6cc; background:#fff; color:#333; font-family:inherit; margin-right:6px;">Mettre en avant</button>
+                    <button onClick="{{ pk.toggleVis }}" style="padding:7px 12px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid #ddd6cc; background:#fff; color:#333; font-family:inherit; margin-right:6px;">Visible</button>
+                    <button onClick="{{ pk.edit }}" style="padding:7px 12px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid #ddd6cc; background:#fff; color:#333; font-family:inherit; margin-right:6px;">Éditer</button>
+                    <button onClick="{{ pk.del }}" style="padding:7px 12px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:1px solid #f1c4d6; background:#fff; color:#d11a6b; font-family:inherit;">Suppr.</button>
+                  </td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table></div>
+        </sc-if>
+
         <!-- TESTIMONIALS -->
         <sc-if value="{{ secTestimonials }}" hint-placeholder-val="{{ false }}">
           <div style="display:flex; justify-content:flex-end; margin-bottom:16px;"><button onClick="{{ addTestimonial }}" style="background:#FF007F; color:#fff; border:none; padding:11px 18px; border-radius:10px; font-family:inherit; font-size:13px; font-weight:600; cursor:pointer;">+ Ajouter un témoignage</button></div>
@@ -1247,7 +1277,7 @@
               <div style="margin-bottom:14px;">
                 <label style="font-family:'Geist Mono',monospace; font-size:10px; letter-spacing:0.08em; color:#8a8377;">{{ f.label }}</label>
                 <sc-if value="{{ f.isTextarea }}" hint-placeholder-val="{{ false }}">
-                  <textarea value="{{ f.value }}" onChange="{{ f.onChange }}" rows="3" style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #ddd6cc; border-radius:9px; font-family:inherit; font-size:14px; color:#222; resize:vertical;"></textarea>
+                  <textarea value="{{ f.value }}" onChange="{{ f.onChange }}" rows="{{ f.rows }}" style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #ddd6cc; border-radius:9px; font-family:inherit; font-size:14px; color:#222; resize:vertical;"></textarea>
                 </sc-if>
                 <sc-if value="{{ f.isImage }}" hint-placeholder-val="{{ false }}">
                   <div style="margin-top:6px; border:1px solid #ddd6cc; border-radius:9px; padding:12px; background:#faf8f4;">
@@ -1371,7 +1401,7 @@
               <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ true }}">
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; font-size: 13px;">
                   <label style="display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,0.6); cursor: pointer;"><input type="checkbox" style="accent-color: #FF007F;"> {{ t.auth.remember }}</label>
-                  <a href="https://wa.me/237651410687" target="_blank" style="color: #FF007F; text-decoration: none;">{{ t.auth.forgot }}</a>
+                  <a href="{{ waPlain }}" target="_blank" style="color: #FF007F; text-decoration: none;">{{ t.auth.forgot }}</a>
                 </div>
               </sc-if>
               <button type="submit" style="width: 100%; background: #FF007F; color: #fff; border: none; padding: 16px; border-radius: 10px; font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer; transition: 0.2s;" style-hover="background: #ff2a92;">{{ authBtnLabel }}</button>
@@ -1456,16 +1486,16 @@
           </div>
           <p style="font-size: 15px; line-height: 1.55; color: rgba(255,255,255,0.6); max-width: 360px; margin: 0 0 24px;">{{ t.foot.tag }}</p>
           <div style="display: flex; gap: 2px">
-            <a href="https://www.facebook.com/webshop237" target="_blank" style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: transform 0.3s ease, box-shadow 0.3s ease;" style-hover="transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,0,127,0.35);">
+            <a href="{{ siteFacebook }}" target="_blank" style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: transform 0.3s ease, box-shadow 0.3s ease;" style-hover="transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,0,127,0.35);">
               <img src="uploads/facebook.png" alt="Facebook" style="width: 30px; height: 30px; object-fit: cover">
             </a>
-            <a href="https://www.instagram.com/websh_op237" target="_blank" style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: transform 0.3s ease, box-shadow 0.3s ease;" style-hover="transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,0,127,0.35);">
+            <a href="{{ siteInstagram }}" target="_blank" style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: transform 0.3s ease, box-shadow 0.3s ease;" style-hover="transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,0,127,0.35);">
               <img src="uploads/instagram (2).png" alt="Instagram" style="width: 30px; height: 30px; object-fit: cover">
             </a>
-            <a href="https://www.tiktok.com/@webshop237" target="_blank" style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: transform 0.3s ease, box-shadow 0.3s ease;" style-hover="transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,0,127,0.35);">
+            <a href="{{ siteTiktok }}" target="_blank" style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: transform 0.3s ease, box-shadow 0.3s ease;" style-hover="transform: translateY(-3px); box-shadow: 0 8px 20px rgba(255,0,127,0.35);">
               <img src="uploads/tiktok.png" alt="TikTok" style="width: 30px; height: 30px; object-fit: cover">
             </a>
-            <a href="https://wa.me/237651410687" target="_blank" style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: transform 0.3s ease, box-shadow 0.3s ease;" style-hover="transform: translateY(-3px); box-shadow: 0 8px 20px rgba(37,211,102,0.4);">
+            <a href="{{ waPlain }}" target="_blank" style="width: 44px; height: 44px; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: transform 0.3s ease, box-shadow 0.3s ease;" style-hover="transform: translateY(-3px); box-shadow: 0 8px 20px rgba(37,211,102,0.4);">
               <img src="uploads/whatsapp.png" alt="WhatsApp" style="width: 30px; height: 30px; object-fit: cover">
             </a>
           </div>
@@ -1483,9 +1513,9 @@
         <div>
           <div style="font-family: Georgia; font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 0.1em; margin-bottom: 16px">{{ t.foot.contact }}</div>
           <div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px;">
-            <a href="tel:+237651410687" style="color: rgba(255,255,255,0.75); text-decoration: none;" style-hover="color: #fff;">+237 651 41 06 87</a>
+            <a href="{{ sitePhoneHref }}" style="color: rgba(255,255,255,0.75); text-decoration: none;" style-hover="color: #fff;">{{ sitePhone }}</a>
             <a href="{{ contactMailHref }}" style="color: rgba(255,255,255,0.75); text-decoration: none;" style-hover="color: #fff;">{{ contactEmail }}</a>
-            <a href="https://wa.me/237651410687" target="_blank" style="color: rgba(255,255,255,0.75); text-decoration: none;" style-hover="color: #fff;">WhatsApp</a>
+            <a href="{{ waPlain }}" target="_blank" style="color: rgba(255,255,255,0.75); text-decoration: none;" style-hover="color: #fff;">WhatsApp</a>
           </div>
         </div>
         <div>
@@ -1501,7 +1531,7 @@
   </footer>
 
   <!-- ════════ FLOATING WHATSAPP ════════ -->
-  <a href="https://wa.me/237651410687?text=Bonjour%20WEBSHOP%2C%20j%27aimerais%20avoir%20des%20informations%20sur%20vos%20services." target="_blank" style="position: fixed; bottom: 28px; right: 28px; z-index: 90; width: 58px; height: 58px; border-radius: 999px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(37,211,102,0.4); text-decoration: none; animation: wsPulse 2.4s infinite; cursor: pointer; overflow: hidden;">
+  <a href="{{ waInfos }}" target="_blank" style="position: fixed; bottom: 28px; right: 28px; z-index: 90; width: 58px; height: 58px; border-radius: 999px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(37,211,102,0.4); text-decoration: none; animation: wsPulse 2.4s infinite; cursor: pointer; overflow: hidden;">
     <img src="uploads/whatsapp (1).png" alt="WhatsApp" style="width: 100%; height: 100%; object-fit: cover;">
   </a>
 
@@ -1728,6 +1758,19 @@ const PRINT_GROUPS = [
   ]}
 ];
 
+// Coordonnees de repli, servies tant que la base n'a pas repondu. Ce sont
+// celles qui etaient ecrites en dur un peu partout dans la page avant que le
+// panneau admin puisse les changer.
+const SITE_DEFAUT = {
+  phone: '+237 651 41 06 87',
+  email: 'webshop237' + '@' + 'gmail.com',
+  address: 'Bonamoussadi, en face du Petit Terrain, Douala – Cameroun',
+  facebook: 'https://www.facebook.com/webshop237',
+  instagram: 'https://www.instagram.com/websh_op237',
+  tiktok: 'https://www.tiktok.com/@webshop237',
+  whatsapp: 'https://wa.me/237651410687'
+};
+
 const CATEGORIES_FR = { all:'Tout', chaussures:'Chaussures', sacs:'Sacs', accessoires:'Accessoires', gadgets:'Gadgets' };
 const CATEGORIES_EN = { all:'All', chaussures:'Shoes', sacs:'Bags', accessoires:'Accessories', gadgets:'Gadgets' };
 
@@ -1844,7 +1887,9 @@ class Component extends DCLogic {
     // que la page s'affiche pleine des la premiere seconde, meme hors ligne.
     pubVehicles: null,
     pubProducts: null,
-    pubTestimonials: null
+    pubTestimonials: null,
+    pubSettings: null,
+    pubPackages: null
   };
 
   componentDidMount() {
@@ -2038,6 +2083,13 @@ class Component extends DCLogic {
       products: PRODUCTS.map(p => ({ ...p })),
       testimonials: TESTIMONIALS.map((tt, i) => ({ id:5000+i, name:tt.name, city:tt.city, stars:tt.stars, fr:tt.fr, en:tt.en, visible:true })),
       users: [],
+      packages: STR.fr.pricing.packages.map((p, i) => ({
+        id: i + 1, position: i + 1, tag: p.tag, unit: p.unit, popular: p.popular, visible: true,
+        name_fr: p.name, name_en: STR.en.pricing.packages[i].name,
+        price_fr: p.price, price_en: STR.en.pricing.packages[i].price,
+        desc_fr: p.desc, desc_en: STR.en.pricing.packages[i].desc,
+        features_fr: p.features.join('\n'), features_en: STR.en.pricing.packages[i].features.join('\n')
+      })),
       settings: { phone:'+237 651 41 06 87', email:'webshop237@gmail.com', address:'Bonamoussadi, en face du Petit Terrain, Douala – Cameroun', facebook:'https://www.facebook.com/webshop237', instagram:'https://www.instagram.com/websh_op237', tiktok:'https://www.tiktok.com/@webshop237', whatsapp:'https://wa.me/237651410687' }
     };
   }
@@ -2046,17 +2098,23 @@ class Component extends DCLogic {
   // laisse les constantes en place plutot que d'afficher une boutique vide.
   async loadCatalog() {
     try {
-      const [veh, prod, test] = await Promise.all([
+      const [veh, prod, test, sets, pack] = await Promise.all([
         db.from('vehicles').select('*').order('id', { ascending: true }),
         db.from('products').select('*').order('id', { ascending: true }),
-        db.from('testimonials').select('*').order('id', { ascending: true })
+        db.from('testimonials').select('*').order('id', { ascending: true }),
+        db.from('site_settings').select('key, value'),
+        db.from('packages').select('*').order('position', { ascending: true })
       ]);
       const next = {};
       if (!veh.error  && veh.data  && veh.data.length)  next.pubVehicles     = fromSbRows('vehicles', veh.data);
       if (!prod.error && prod.data && prod.data.length) next.pubProducts     = fromSbRows('products', prod.data);
       if (!test.error && test.data && test.data.length) next.pubTestimonials = fromSbRows('testimonials', test.data);
+      if (!sets.error && sets.data && sets.data.length) {
+        next.pubSettings = Object.fromEntries(sets.data.filter(s => s.value).map(s => [s.key, s.value]));
+      }
+      if (!pack.error && pack.data && pack.data.length) next.pubPackages = pack.data;
       if (Object.keys(next).length) this.setState(next);
-      for (const r of [veh, prod, test]) {
+      for (const r of [veh, prod, test, sets, pack]) {
         if (r.error) console.warn('Catalogue : lecture partielle', r.error.message);
       }
     } catch (err) {
@@ -2067,12 +2125,24 @@ class Component extends DCLogic {
   // Le catalogue effectivement affiche : la base si elle a repondu, le fichier
   // sinon. Les temoignages masques depuis l'admin sont retires, mais si le tri
   // ne laisse rien, on remontre tout plutot qu'un carrousel vide.
+  // Coordonnees affichees : celles du panneau admin, sinon celles du fichier.
+  // Une valeur vide en base ne doit pas effacer un numero de telephone de la
+  // page, d'ou la fusion cle par cle plutot qu'un remplacement en bloc.
+  siteInfo() {
+    const s = { ...SITE_DEFAUT, ...(this.state.pubSettings || {}) };
+    // Les liens « Reserver sur WhatsApp » se construisent a partir du numero
+    // que porte le lien whatsapp : un seul endroit a changer dans l'admin.
+    const digits = (s.whatsapp || '').replace(/\D/g, '') || (s.phone || '').replace(/\D/g, '') || '237651410687';
+    return { ...s, waNumber: digits };
+  }
+
   pubCatalog() {
     const vehicles = this.state.pubVehicles || VEHICLES;
     const products = this.state.pubProducts || PRODUCTS;
     const all = this.state.pubTestimonials || TESTIMONIALS;
     const shown = all.filter(t => t.visible !== false);
-    return { vehicles, products, testimonials: shown.length ? shown : all };
+    const packs = (this.state.pubPackages || []).filter(p => p.visible !== false);
+    return { vehicles, products, testimonials: shown.length ? shown : all, packages: packs };
   }
 
   async loadAdmin() {
@@ -2081,7 +2151,7 @@ class Component extends DCLogic {
     if (!data) { data = this.seedAdmin(); }
     this.setState({ adminData: data });
     try {
-      const [req, bk, ord, qt, veh, prod, test, sets, usr] = await Promise.all([
+      const [req, bk, ord, qt, veh, prod, test, pack, sets, usr] = await Promise.all([
         db.from('requests').select('*').order('created_at',{ascending:false}).limit(500),
         db.from('bookings').select('*').order('created_at',{ascending:false}).limit(500),
         db.from('orders').select('*').order('created_at',{ascending:false}).limit(500),
@@ -2089,6 +2159,7 @@ class Component extends DCLogic {
         db.from('vehicles').select('*').order('id',{ascending:true}),
         db.from('products').select('*').order('id',{ascending:true}),
         db.from('testimonials').select('*').order('id',{ascending:true}),
+        db.from('packages').select('*').order('position',{ascending:true}),
         db.from('site_settings').select('*'),
         db.from('profiles').select('id, name, email, phone, created_at').order('created_at',{ascending:false}).limit(1000)
       ]);
@@ -2104,6 +2175,7 @@ class Component extends DCLogic {
         vehicles:     pick(veh,  'vehicles',     data.vehicles),
         products:     pick(prod, 'products',     data.products),
         testimonials: pick(test, 'testimonials', data.testimonials),
+        packages:     pick(pack, 'packages',     data.packages || []),
         users:        usr.error ? [] : (usr.data || []),
         settings: (!sets.error && sets.data && sets.data.length)
           ? Object.fromEntries(sets.data.map(s => [s.key, s.value]))
@@ -2193,6 +2265,8 @@ class Component extends DCLogic {
   blankEntity(type) {
     if (type === 'vehicle') return { id:0, name:'', year:2010, plate:'', fuel:'Essence', trans:'Manuelle', seats:5, priceDla:0, priceOut:0, available:true, img:'' };
     if (type === 'product') return { id:0, cat:'chaussures', name:'', price:0, img:'' };
+    if (type === 'package') return { id:0, position:99, tag:'', unit:'FCFA', popular:false, visible:true,
+      name_fr:'', name_en:'', price_fr:'', price_en:'', desc_fr:'', desc_en:'', features_fr:'', features_en:'' };
     return { id:0, name:'', city:'Douala', stars:5, fr:'', en:'', visible:true, avatar:'' };
   }
   startEdit(type, data) {
@@ -2244,7 +2318,7 @@ class Component extends DCLogic {
   saveEdit() {
     const e = this.state.adminEdit; if (!e) return;
     if (this.state.imgUploading) return;
-    const coll = e.type === 'vehicle' ? 'vehicles' : e.type === 'product' ? 'products' : 'testimonials';
+    const coll = e.type === 'vehicle' ? 'vehicles' : e.type === 'product' ? 'products' : e.type === 'package' ? 'packages' : 'testimonials';
     const data = { ...e.data };
     if (e.isNew) data.id = Date.now();
     // Seule la photo retenue reste dans le bucket ; l’ancienne, remplacée, s’en va.
@@ -2303,10 +2377,14 @@ class Component extends DCLogic {
 
   renderVals() {
     const t = STR[this.state.lang];
+    // Declares en tete : les liens WhatsApp des services sont construits des la
+    // premiere ligne du rendu, bien avant la grille tarifaire.
+    const info = this.siteInfo();
+    const wa = (texte) => 'https://wa.me/' + info.waNumber + (texte ? '?text=' + encodeURIComponent(texte) : '');
     const cats = this.state.lang === 'fr' ? CATEGORIES_FR : CATEGORIES_EN;
     const services = (this.state.lang === 'fr' ? SERVICES_FR : SERVICES_EN).map(s => ({
       ...s,
-      waHref: 'https://wa.me/237651410687?text=' + encodeURIComponent('Bonjour WEBSHOP, je souhaite des informations sur : ' + s.title)
+      waHref: wa('Bonjour WEBSHOP, je souhaite des informations sur : ' + s.title)
     }));
 
     const cat = this.pubCatalog();
@@ -2326,7 +2404,7 @@ class Component extends DCLogic {
       priceFmt: fmtPrice(p.price),
       catLabel: cats[p.cat] || p.cat,
       bgStyle: "#efeae3 url('" + p.img + "') center/cover no-repeat",
-      waHref: 'https://wa.me/237651410687?text=' + encodeURIComponent('Bonjour WEBSHOP, je souhaite commander : ' + p.name + ' (' + fmtPrice(p.price) + ' FCFA)')
+      waHref: wa('Bonjour WEBSHOP, je souhaite commander : ' + p.name + ' (' + fmtPrice(p.price) + ' FCFA)')
     }));
 
     const marketItems = t.market.items.map((label, i) => ({ num: String(i+1).padStart(2,'0'), label }));
@@ -2423,8 +2501,19 @@ class Component extends DCLogic {
     }));
 
     // ── PRICING ──
-    const pkgWa = (name) => 'https://wa.me/237651410687?text=' + encodeURIComponent('Bonjour WEBSHOP, je suis intéressé(e) par le forfait ' + name + '.');
-    const pricingPackages = t.pricing.packages.map(p => {
+    const pkgWa = (name) => wa('Bonjour WEBSHOP, je suis intéressé(e) par le forfait ' + name + '.');
+    const enFr = this.state.lang === 'fr';
+    const packSource = cat.packages.length ? cat.packages.map(p => ({
+      name: enFr ? p.name_fr : p.name_en,
+      price: enFr ? p.price_fr : p.price_en,
+      unit: p.unit || '',
+      tag: p.tag || '',
+      popular: !!p.popular,
+      desc: enFr ? p.desc_fr : p.desc_en,
+      features: String(enFr ? p.features_fr : p.features_en).split('\n').map(f => f.trim()).filter(Boolean)
+    })) : t.pricing.packages;
+
+    const pricingPackages = packSource.map(p => {
       const pop = p.popular;
       return {
         name: p.name, tag: p.tag, popular: pop, desc: p.desc,
@@ -2452,7 +2541,7 @@ class Component extends DCLogic {
     const adminMenu = [
       { key:'dashboard', label:'Tableau de bord' }, { key:'requests', label:'Demandes' }, { key:'bookings', label:'Réservations' },
       { key:'orders', label:'Commandes' }, { key:'quotes', label:'Devis' }, { key:'vehicles', label:'Véhicules' },
-      { key:'products', label:'Produits' }, { key:'testimonials', label:'Témoignages' },
+      { key:'products', label:'Produits' }, { key:'packages', label:'Forfaits WEBMARKET' }, { key:'testimonials', label:'Témoignages' },
       { key:'users', label:'Utilisateurs' }, { key:'settings', label:'Paramètres' }
     ].map(m => ({ ...m, active: adminSection === m.key, onClick: () => this.setAdminSection(m.key),
       style: 'display:block; width:100%; text-align:left; border:none; cursor:pointer; padding:11px 16px; border-radius:10px; font-family:inherit; font-size:14px; font-weight:500; margin-bottom:2px; transition:0.15s; ' + (adminSection === m.key ? 'background:#0A0A0A; color:#fff;' : 'background:transparent; color:#52504a;') }));
@@ -2463,6 +2552,20 @@ class Component extends DCLogic {
     const quoteRows = (ad ? ad.quotes : []).map(r => ({ ...r, statusStyle: pill(r.status), toggle: cyc('quotes', r, ['nouveau','traité']), del: () => this.removeItem('quotes', r.id) }));
     const vehRows = (ad ? ad.vehicles : []).map(v => ({ ...v, hasImg: !!v.img, noImg: !v.img, priceDlaFmt: fmtPrice(v.priceDla), priceOutFmt: fmtPrice(v.priceOut), availStyle: pill(v.available ? 'confirmé' : 'nouveau'), availLabel: v.available ? 'Disponible' : 'Indisponible', edit: () => this.startEdit('vehicle', v), del: () => this.removeItem('vehicles', v.id), toggleAvail: () => this.toggleField('vehicles', v.id, 'available') }));
     const prodRows = (ad ? ad.products : []).map(p => ({ ...p, hasImg: !!p.img, noImg: !p.img, priceFmt: fmtPrice(p.price), catLabel: cats[p.cat] || p.cat, edit: () => this.startEdit('product', p), del: () => this.removeItem('products', p.id) }));
+    const packRows = (ad ? (ad.packages || []) : []).map(pk => ({
+      ...pk,
+      priceLabel: pk.price_fr + (pk.unit ? ' ' + pk.unit : ''),
+      featCount: String(pk.features_fr || '').split('\n').filter(f => f.trim()).length,
+      popStyle: pill(pk.popular ? 'confirmé' : 'nouveau'),
+      popLabel: pk.popular ? 'Mis en avant' : 'Normal',
+      visStyle: pill(pk.visible ? 'confirmé' : 'nouveau'),
+      visLabel: pk.visible ? 'Visible' : 'Masqué',
+      edit: () => this.startEdit('package', pk),
+      del: () => this.removeItem('packages', pk.id),
+      togglePop: () => this.toggleField('packages', pk.id, 'popular'),
+      toggleVis: () => this.toggleField('packages', pk.id, 'visible')
+    }));
+
     const testRows = (ad ? ad.testimonials : []).map(tt => ({ ...tt, starStr: '★'.repeat(tt.stars), visStyle: pill(tt.visible ? 'confirmé' : 'nouveau'), visLabel: tt.visible ? 'Visible' : 'Masqué', edit: () => this.startEdit('testimonial', tt), del: () => this.removeItem('testimonials', tt.id), toggleVis: () => this.toggleField('testimonials', tt.id, 'visible') }));
     const stats = ad ? [
       { label:'Demandes', value: ad.requests.length, sub: ad.requests.filter(r => r.status === 'nouveau').length + ' nouvelle(s)' },
@@ -2484,6 +2587,17 @@ class Component extends DCLogic {
         {key:'name',label:'Nom',type:'text',value:dt.name},{key:'year',label:'Année',type:'number',value:dt.year},{key:'plate',label:'Plaque',type:'text',value:dt.plate},{key:'fuel',label:'Carburant',type:'text',value:dt.fuel},{key:'trans',label:'Transmission',type:'text',value:dt.trans},{key:'seats',label:'Places',type:'number',value:dt.seats},{key:'priceDla',label:'Prix / jour Douala',type:'number',value:dt.priceDla},{key:'priceOut',label:'Prix hors Douala',type:'number',value:dt.priceOut},{key:'img',label:'Photo du véhicule',type:'image',value:dt.img}
       ]; } else if (ae.type === 'product') { editTitle = ae.isNew ? 'Nouveau produit' : 'Modifier le produit'; editFields = [
         {key:'name',label:'Nom',type:'text',value:dt.name},{key:'cat',label:'Catégorie (chaussures / sacs / accessoires / gadgets)',type:'text',value:dt.cat},{key:'price',label:'Prix (FCFA)',type:'number',value:dt.price},{key:'img',label:'Photo du produit',type:'image',value:dt.img}
+      ]; } else if (ae.type === 'package') { editTitle = ae.isNew ? 'Nouveau forfait' : 'Modifier le forfait'; editFields = [
+        {key:'name_fr',label:'Nom (FR)',type:'text',value:dt.name_fr},{key:'name_en',label:'Nom (EN)',type:'text',value:dt.name_en},
+        {key:'tag',label:'Étiquette (STARTER / PRO / ENTERPRISE)',type:'text',value:dt.tag},
+        {key:'price_fr',label:'Prix affiché (FR) — « 150 000 » ou « Sur devis »',type:'text',value:dt.price_fr},
+        {key:'price_en',label:'Prix affiché (EN)',type:'text',value:dt.price_en},
+        {key:'unit',label:'Unité (FCFA, ou vide pour « Sur devis »)',type:'text',value:dt.unit},
+        {key:'position',label:'Ordre d’affichage',type:'number',value:dt.position},
+        {key:'desc_fr',label:'Description (FR)',type:'textarea',value:dt.desc_fr},
+        {key:'desc_en',label:'Description (EN)',type:'textarea',value:dt.desc_en},
+        {key:'features_fr',label:'Avantages (FR) — un par ligne',type:'textarea',value:dt.features_fr},
+        {key:'features_en',label:'Avantages (EN) — un par ligne',type:'textarea',value:dt.features_en}
       ]; } else { editTitle = ae.isNew ? 'Nouveau témoignage' : 'Modifier le témoignage'; editFields = [
         {key:'name',label:'Nom',type:'text',value:dt.name},{key:'city',label:'Ville',type:'text',value:dt.city},{key:'stars',label:'Étoiles (1-5)',type:'number',value:dt.stars},{key:'fr',label:'Avis (FR)',type:'textarea',value:dt.fr},{key:'en',label:'Avis (EN)',type:'textarea',value:dt.en},{key:'avatar',label:'Photo du client',type:'image',value:dt.avatar}
       ]; }
@@ -2491,7 +2605,7 @@ class Component extends DCLogic {
     const imgBusy = this.state.imgUploading;
     const imgErr = this.state.imgError;
     editFields = editFields.map(f => {
-      const base = { ...f, isTextarea: f.type === 'textarea', isImage: f.type === 'image', isPlain: f.type !== 'textarea' && f.type !== 'image', inputType: f.type === 'number' ? 'number' : 'text', onChange: (e) => this.updateEdit(f.key, f.type === 'number' ? Number(e.target.value) : e.target.value) };
+      const base = { ...f, rows: f.key && f.key.indexOf('features') === 0 ? 7 : 3, isTextarea: f.type === 'textarea', isImage: f.type === 'image', isPlain: f.type !== 'textarea' && f.type !== 'image', inputType: f.type === 'number' ? 'number' : 'text', onChange: (e) => this.updateEdit(f.key, f.type === 'number' ? Number(e.target.value) : e.target.value) };
       if (f.type !== 'image') return base;
       const has = !!(f.value && String(f.value).trim());
       return { ...base,
@@ -2541,7 +2655,7 @@ class Component extends DCLogic {
         ...this.state.selectedVehicle,
         priceDla: fmtPrice(this.state.selectedVehicle.priceDla),
         priceOut: fmtPrice(this.state.selectedVehicle.priceOut),
-        waBook: 'https://wa.me/237651410687?text=' + encodeURIComponent('Bonjour WEBSHOP, je souhaite réserver le ' + this.state.selectedVehicle.name + '.')
+        waBook: wa('Bonjour WEBSHOP, je souhaite réserver le ' + this.state.selectedVehicle.name + '.')
       } : null,
       closeVehicle: () => this.closeVehicle(),
       stopProp: (e) => e.stopPropagation(),
@@ -2598,7 +2712,7 @@ class Component extends DCLogic {
       onAuthPhone: (e) => this.updateAuth('phone', e.target.value),
       onAuthPassword: (e) => this.updateAuth('password', e.target.value),
       onAuthConfirm: (e) => this.updateAuth('confirm', e.target.value),
-      authWaHref: 'https://wa.me/237651410687?text=' + encodeURIComponent('Bonjour WEBSHOP, je souhaite accéder à mon espace client.'),
+      authWaHref: wa('Bonjour WEBSHOP, je souhaite accéder à mon espace client.'),
 
       menuOpen: this.state.menuOpen,
       toggleMenu: () => this.setState(s => ({ menuOpen: !s.menuOpen })),
@@ -2606,8 +2720,20 @@ class Component extends DCLogic {
 
       faqItems,
       pricingPackages,
-      contactEmail: 'webshop237' + '@' + 'gmail.com',
-      contactMailHref: 'mailto:' + 'webshop237' + '@' + 'gmail.com',
+      contactEmail: info.email,
+      contactMailHref: 'mailto:' + info.email,
+      sitePhone: info.phone,
+      sitePhoneHref: 'tel:' + info.phone.replace(/[^+0-9]/g, ''),
+      siteAddress: info.address,
+      siteFacebook: info.facebook,
+      siteInstagram: info.instagram,
+      siteTiktok: info.tiktok,
+      waPlain: wa(''),
+      waHello: wa('Bonjour WEBSHOP'),
+      waInfos: wa('Bonjour WEBSHOP, j’aimerais avoir des informations sur vos services.'),
+      waDevisPrint: wa('Bonjour WEBSHOP, je souhaite un devis pour WEB PRINT'),
+      waDevisForfait: wa('Bonjour WEBSHOP, je souhaite un devis forfait'),
+      waDevisSite: wa('Bonjour WEBSHOP, je souhaite un devis pour un site web ou une application'),
 
       adminOpen: this.state.adminView,
       secDashboard: adminSection === 'dashboard',
@@ -2617,10 +2743,11 @@ class Component extends DCLogic {
       secQuotes: adminSection === 'quotes',
       secVehicles: adminSection === 'vehicles',
       secProducts: adminSection === 'products',
+      secPackages: adminSection === 'packages',
       secTestimonials: adminSection === 'testimonials',
       secUsers: adminSection === 'users',
       secSettings: adminSection === 'settings',
-      adminMenu, reqRows, bookRows, orderRows, quoteRows, vehRows, prodRows, testRows, stats, recentReq, settings,
+      adminMenu, reqRows, bookRows, orderRows, quoteRows, vehRows, prodRows, packRows, testRows, stats, recentReq, settings,
       userRows: (ad ? ad.users : []).map(u => ({ ...u, joinDate: u.created_at ? u.created_at.slice(0,10) : '—', del: () => this.deleteUser(u.id) })),
       userCount: ad ? (ad.users || []).length : 0,
       closeAdmin: () => this.closeAdmin(),
@@ -2630,6 +2757,7 @@ class Component extends DCLogic {
       closeAdminSidebar: () => this.setState({ adminSidebarOpen: false }),
       addVehicle: () => this.startEdit('vehicle', null),
       addProduct: () => this.startEdit('product', null),
+      addPackage: () => this.startEdit('package', null),
       addTestimonial: () => this.startEdit('testimonial', null),
       editOpen, editTitle, editFields,
       editBusy: imgBusy,
