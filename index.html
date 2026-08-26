@@ -1121,7 +1121,7 @@
             <tbody>
               <sc-for list="{{ vehRows }}" as="v" hint-placeholder-count="4">
                 <tr>
-                  <td style="padding:13px 16px; font-size:14px; border-bottom:1px solid #f1ede6;"><div style="font-weight:600;">{{ v.name }}</div><div style="font-size:12px; color:#9a958c; margin-top:3px;">{{ v.year }} · {{ v.fuel }} · {{ v.trans }} · {{ v.seats }} pl.</div></td>
+                  <td style="padding:13px 16px; font-size:14px; border-bottom:1px solid #f1ede6;"><div style="display:flex; align-items:center; gap:11px;"><sc-if value="{{ v.hasImg }}" hint-placeholder-val="{{ true }}"><img src="{{ v.img }}" alt="" style="width:44px; height:44px; border-radius:8px; object-fit:cover; background:#f1ede6; flex-shrink:0;"></sc-if><sc-if value="{{ v.noImg }}" hint-placeholder-val="{{ false }}"><div style="width:44px; height:44px; border-radius:8px; background:#f1ede6; flex-shrink:0;"></div></sc-if><div><div style="font-weight:600;">{{ v.name }}</div><div style="font-size:12px; color:#9a958c; margin-top:3px;">{{ v.year }} · {{ v.fuel }} · {{ v.trans }} · {{ v.seats }} pl.</div></div></div></td>
                   <td style="padding:13px 16px; font-size:13px; border-bottom:1px solid #f1ede6; font-family:'Geist Mono',monospace; color:#6a665e;">{{ v.plate }}</td>
                   <td style="padding:13px 16px; font-size:14px; border-bottom:1px solid #f1ede6;">{{ v.priceDlaFmt }} <span style="color:#9a958c; font-size:11px;">FCFA</span></td>
                   <td style="padding:13px 16px; border-bottom:1px solid #f1ede6;"><span style="{{ v.availStyle }}">{{ v.availLabel }}</span></td>
@@ -1149,7 +1149,7 @@
             <tbody>
               <sc-for list="{{ prodRows }}" as="p" hint-placeholder-count="4">
                 <tr>
-                  <td style="padding:13px 16px; font-size:14px; border-bottom:1px solid #f1ede6; font-weight:600;">{{ p.name }}</td>
+                  <td style="padding:13px 16px; font-size:14px; border-bottom:1px solid #f1ede6; font-weight:600;"><div style="display:flex; align-items:center; gap:11px;"><sc-if value="{{ p.hasImg }}" hint-placeholder-val="{{ true }}"><img src="{{ p.img }}" alt="" style="width:44px; height:44px; border-radius:8px; object-fit:cover; background:#f1ede6; flex-shrink:0;"></sc-if><sc-if value="{{ p.noImg }}" hint-placeholder-val="{{ false }}"><div style="width:44px; height:44px; border-radius:8px; background:#f1ede6; flex-shrink:0;"></div></sc-if><span>{{ p.name }}</span></div></td>
                   <td style="padding:13px 16px; font-size:14px; border-bottom:1px solid #f1ede6; color:#6a665e;">{{ p.catLabel }}</td>
                   <td style="padding:13px 16px; font-size:14px; border-bottom:1px solid #f1ede6;">{{ p.priceFmt }} <span style="color:#9a958c; font-size:11px;">FCFA</span></td>
                   <td style="padding:13px 16px; border-bottom:1px solid #f1ede6; white-space:nowrap;">
@@ -1244,13 +1244,33 @@
                 <sc-if value="{{ f.isTextarea }}" hint-placeholder-val="{{ false }}">
                   <textarea value="{{ f.value }}" onChange="{{ f.onChange }}" rows="3" style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #ddd6cc; border-radius:9px; font-family:inherit; font-size:14px; color:#222; resize:vertical;"></textarea>
                 </sc-if>
-                <sc-if value="{{ f.notTextarea }}" hint-placeholder-val="{{ true }}">
+                <sc-if value="{{ f.isImage }}" hint-placeholder-val="{{ false }}">
+                  <div style="margin-top:6px; border:1px solid #ddd6cc; border-radius:9px; padding:12px; background:#faf8f4;">
+                    <sc-if value="{{ f.hasImage }}" hint-placeholder-val="{{ true }}">
+                      <img src="{{ f.value }}" alt="" style="display:block; width:100%; height:170px; object-fit:cover; border-radius:7px; background:#f1ede6;">
+                    </sc-if>
+                    <sc-if value="{{ f.noImage }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex; align-items:center; justify-content:center; height:110px; border-radius:7px; background:#f1ede6; color:#9a958c; font-size:13px;">Aucune photo pour l'instant</div>
+                    </sc-if>
+                    <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+                      <label style="{{ f.pickStyle }}">{{ f.pickLabel }}<input type="file" accept="image/*" onChange="{{ f.onPick }}" disabled="{{ f.busy }}" style="display:none;"></label>
+                      <sc-if value="{{ f.canClear }}" hint-placeholder-val="{{ true }}">
+                        <button onClick="{{ f.onClear }}" style="padding:10px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; border:1px solid #f1c4d6; background:#fff; color:#d11a6b; font-family:inherit;">Retirer</button>
+                      </sc-if>
+                    </div>
+                    <sc-if value="{{ f.hasError }}" hint-placeholder-val="{{ false }}">
+                      <div style="margin-top:9px; font-size:12px; line-height:1.45; color:#d11a6b;">{{ f.error }}</div>
+                    </sc-if>
+                    <input type="text" value="{{ f.value }}" onChange="{{ f.onChange }}" placeholder="ou coller l'adresse d'une image en ligne" style="width:100%; margin-top:10px; padding:9px 11px; border:1px solid #e3ded5; border-radius:8px; font-family:inherit; font-size:12px; color:#6a665e; background:#fff;">
+                  </div>
+                </sc-if>
+                <sc-if value="{{ f.isPlain }}" hint-placeholder-val="{{ true }}">
                   <input type="{{ f.inputType }}" value="{{ f.value }}" onChange="{{ f.onChange }}" style="width:100%; margin-top:6px; padding:10px 12px; border:1px solid #ddd6cc; border-radius:9px; font-family:inherit; font-size:14px; color:#222;">
                 </sc-if>
               </div>
             </sc-for>
             <div style="display:flex; gap:12px; margin-top:24px;">
-              <button onClick="{{ saveEdit }}" style="flex:1; background:#FF007F; color:#fff; border:none; padding:14px; border-radius:10px; font-family:inherit; font-size:14px; font-weight:600; cursor:pointer;">Enregistrer</button>
+              <button onClick="{{ saveEdit }}" disabled="{{ editBusy }}" style="{{ saveStyle }}">{{ saveLabel }}</button>
               <button onClick="{{ cancelEdit }}" style="flex:1; background:#f1ede6; color:#333; border:none; padding:14px; border-radius:10px; font-family:inherit; font-size:14px; font-weight:600; cursor:pointer;">Annuler</button>
             </div>
           </div>
@@ -1723,6 +1743,61 @@ const fromSbRows = (coll, rows) => (rows||[]).map(r => {
   return r;
 });
 
+// ── IMAGES DU CATALOGUE (upload depuis l'appareil) ──
+// Le panneau admin n'acceptait que des URL tapées à la main. Les fichiers
+// choisis depuis un téléphone ou un PC partent maintenant dans le bucket
+// « catalogue » de Supabase, dont seules les policies is_admin() autorisent
+// l'écriture (voir supabase/migrations/20260821_storage_catalogue.sql).
+const IMG_BUCKET = 'catalogue';
+const IMG_MAX_SIDE = 1400;
+const IMG_QUALITY = 0.82;
+const IMG_PUBLIC_MARKER = '/storage/v1/object/public/' + IMG_BUCKET + '/';
+
+// Une photo de téléphone pèse 3 à 5 Mo. L'envoyer telle quelle punit deux
+// fois : à l'upload sur une connexion camerounaise, puis à chaque ouverture
+// de la boutique. On redimensionne donc avant l'envoi.
+const compressImage = (file) => new Promise((resolve) => {
+  if (!/^image\//.test(file.type || '')) { resolve(null); return; }
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    URL.revokeObjectURL(url);
+    const scale = Math.min(1, IMG_MAX_SIDE / Math.max(img.width, img.height));
+    const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    canvas.toBlob(b => resolve(b), 'image/jpeg', IMG_QUALITY);
+  };
+  // HEIC des iPhone et formats exotiques : le navigateur ne sait pas toujours
+  // les décoder. On renvoie null et le fichier d'origine part tel quel.
+  img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+  img.src = url;
+});
+
+const uploadCatalogImage = async (file, folder) => {
+  const shrunk = await compressImage(file);
+  const body = shrunk || file;
+  const ext = shrunk ? 'jpg' : ((file.name || '').split('.').pop() || 'jpg').toLowerCase();
+  const path = folder + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+  const { error } = await db.storage.from(IMG_BUCKET).upload(path, body, {
+    contentType: shrunk ? 'image/jpeg' : (file.type || 'image/jpeg'),
+    cacheControl: '31536000'
+  });
+  if (error) throw error;
+  return { path, url: db.storage.from(IMG_BUCKET).getPublicUrl(path).data.publicUrl };
+};
+
+// Chemin interne d'une image de notre bucket ; null pour une URL externe,
+// qu'il ne faut évidemment jamais tenter de supprimer.
+const catalogPath = (url) => {
+  const i = (url || '').indexOf(IMG_PUBLIC_MARKER);
+  return i < 0 ? null : decodeURIComponent(url.slice(i + IMG_PUBLIC_MARKER.length));
+};
+const dropCatalogFiles = (paths) => {
+  if (paths && paths.length) db.storage.from(IMG_BUCKET).remove(paths).then(({error}) => { if (error) console.warn('Nettoyage image impossible', error); });
+};
+
 class Component extends DCLogic {
   state = {
     loading: true,
@@ -1756,7 +1831,9 @@ class Component extends DCLogic {
     adminSection: 'dashboard',
     adminSidebarOpen: false,
     adminData: null,
-    adminEdit: null
+    adminEdit: null,
+    imgUploading: false,
+    imgError: ''
   };
 
   componentDidMount() {
@@ -2008,14 +2085,19 @@ class Component extends DCLogic {
     this.setState({ adminView:true, adminSection:'dashboard', authView:null, menuOpen:false, adminEdit:null });
     document.body.style.overflow = 'hidden';
   }
-  closeAdmin() { this.setState({ adminView:false, adminEdit:null }); document.body.style.overflow = ''; }
-  setAdminSection(s) { this.setState({ adminSection:s, adminEdit:null, adminSidebarOpen: false }); }
+  closeAdmin() { this.endEdit(); this.setState({ adminView:false, adminEdit:null, imgUploading:false, imgError:'' }); document.body.style.overflow = ''; }
+  setAdminSection(s) { this.endEdit(); this.setState({ adminSection:s, adminEdit:null, adminSidebarOpen: false, imgUploading:false, imgError:'' }); }
   setStatus(coll, id, status) {
     this.mutate(d => { const it = d[coll].find(x => x.id === id); if (it) it.status = status; });
     db.from(coll).update({ status }).eq('id', id).then(({error}) => { if(error) console.warn('Supabase update status failed', error); });
   }
   removeItem(coll, id) {
-    this.mutate(d => { d[coll] = d[coll].filter(x => x.id !== id); });
+    // La fiche part, sa photo aussi : sans cela le bucket accumulerait des
+    // fichiers que plus aucune fiche n’affiche.
+    let goneImg = null;
+    this.mutate(d => { const it = d[coll].find(x => x.id === id); if (it) goneImg = it.img; d[coll] = d[coll].filter(x => x.id !== id); });
+    const gonePath = catalogPath(goneImg);
+    if (gonePath) dropCatalogFiles([gonePath]);
     db.from(coll).delete().eq('id', id).then(({error}) => { if(error) console.warn('Supabase delete failed', error); });
   }
   deleteUser(id) {
@@ -2039,20 +2121,68 @@ class Component extends DCLogic {
     if (type === 'product') return { id:0, cat:'chaussures', name:'', price:0, img:'' };
     return { id:0, name:'', city:'Douala', stars:5, fr:'', en:'', visible:true };
   }
-  startEdit(type, data) { this.setState({ adminEdit: { type, isNew: !data, data: data ? { ...data } : this.blankEntity(type) } }); }
+  startEdit(type, data) {
+    this.endEdit();
+    this.setState({ adminEdit: { type, isNew: !data, data: data ? { ...data } : this.blankEntity(type), origImg: data ? (data.img || '') : '' }, imgUploading:false, imgError:'' });
+  }
   updateEdit(key, val) { this.setState(s => ({ adminEdit: { ...s.adminEdit, data: { ...s.adminEdit.data, [key]: val } } })); }
-  cancelEdit() { this.setState({ adminEdit:null }); }
+
+  // Une photo part dans le bucket dès qu’elle est choisie, avant même que la
+  // fiche soit enregistrée. Les fichiers déposés puis abandonnés (fiche
+  // annulée, photo remplacée par une autre) sont suivis ici pour être retirés
+  // du bucket : personne ne les affichera jamais.
+  endEdit(keep) {
+    this._editToken = (this._editToken || 0) + 1;
+    const kept = keep || [];
+    const stale = (this._pendingUploads || []).filter(p => kept.indexOf(p) < 0);
+    this._pendingUploads = [];
+    dropCatalogFiles(stale);
+  }
+  pickEditImage(key, ev) {
+    const file = ev.target.files && ev.target.files[0];
+    ev.target.value = '';
+    if (!file || this.state.imgUploading || !this.state.adminEdit) return;
+    if (!/^image\//.test(file.type || '')) { this.setState({ imgError: 'Ce fichier n’est pas une image.' }); return; }
+    // Le bucket refuse au-delà de 5 Mo. La compression ramène presque toujours
+    // sous cette barre, mais un fichier énorme ferait patiner le téléphone
+    // avant même d’être lu : autant le refuser tout de suite.
+    if (file.size > 25 * 1024 * 1024) { this.setState({ imgError: 'Photo trop lourde (25 Mo maximum).' }); return; }
+    const folder = this.state.adminEdit.type === 'vehicle' ? 'vehicules' : 'produits';
+    const token = this._editToken || 0;
+    this.setState({ imgUploading: true, imgError: '' });
+    uploadCatalogImage(file, folder).then(({ path, url }) => {
+      // Fiche fermée pendant l’envoi : le fichier n’est rattaché à rien.
+      if (token !== (this._editToken || 0)) { dropCatalogFiles([path]); this.setState({ imgUploading:false }); return; }
+      this._pendingUploads = (this._pendingUploads || []).concat(path);
+      this.setState(s => ({ imgUploading:false, adminEdit: s.adminEdit ? { ...s.adminEdit, data: { ...s.adminEdit.data, [key]: url } } : null }));
+    }).catch(err => {
+      console.warn('Envoi de la photo impossible', err);
+      const msg = (err && err.message) || '';
+      this.setState({ imgUploading:false, imgError: /size|large|exceed/i.test(msg)
+        ? 'Photo refusée par le serveur : elle dépasse 5 Mo après compression.'
+        : 'Envoi impossible. Vérifiez la connexion, puis réessayez.' });
+    });
+  }
+  clearEditImage(key) { this.setState(s => ({ adminEdit: s.adminEdit ? { ...s.adminEdit, data: { ...s.adminEdit.data, [key]: '' } } : null, imgError:'' })); }
+
+  cancelEdit() { this.endEdit(); this.setState({ adminEdit:null, imgUploading:false, imgError:'' }); }
   saveEdit() {
     const e = this.state.adminEdit; if (!e) return;
+    if (this.state.imgUploading) return;
     const coll = e.type === 'vehicle' ? 'vehicles' : e.type === 'product' ? 'products' : 'testimonials';
     const data = { ...e.data };
     if (e.isNew) data.id = Date.now();
+    // Seule la photo retenue reste dans le bucket ; l’ancienne, remplacée, s’en va.
+    const keptPath = catalogPath(data.img);
+    this.endEdit(keptPath ? [keptPath] : []);
+    const origPath = catalogPath(e.origImg);
+    if (origPath && origPath !== keptPath) dropCatalogFiles([origPath]);
     this.mutate(d => {
       if (e.isNew) { d[coll].push(data); }
       else { const i = d[coll].findIndex(x => x.id === data.id); if (i >= 0) d[coll][i] = data; }
     });
     db.from(coll).upsert(toSbRow(coll, data)).then(({error}) => { if(error) console.warn('Supabase upsert failed', error); });
-    this.setState({ adminEdit:null });
+    this.setState({ adminEdit:null, imgError:'' });
   }
 
   updateForm(field, value) {
@@ -2237,8 +2367,8 @@ class Component extends DCLogic {
     const bookRows = (ad ? ad.bookings : []).map(r => ({ ...r, statusStyle: pill(r.status), toggle: cyc('bookings', r, ['en attente','confirmé']), del: () => this.removeItem('bookings', r.id) }));
     const orderRows = (ad ? ad.orders : []).map(r => ({ ...r, statusStyle: pill(r.status), toggle: cyc('orders', r, ['préparation','livré']), del: () => this.removeItem('orders', r.id) }));
     const quoteRows = (ad ? ad.quotes : []).map(r => ({ ...r, statusStyle: pill(r.status), toggle: cyc('quotes', r, ['nouveau','traité']), del: () => this.removeItem('quotes', r.id) }));
-    const vehRows = (ad ? ad.vehicles : []).map(v => ({ ...v, priceDlaFmt: fmtPrice(v.priceDla), priceOutFmt: fmtPrice(v.priceOut), availStyle: pill(v.available ? 'confirmé' : 'nouveau'), availLabel: v.available ? 'Disponible' : 'Indisponible', edit: () => this.startEdit('vehicle', v), del: () => this.removeItem('vehicles', v.id), toggleAvail: () => this.toggleField('vehicles', v.id, 'available') }));
-    const prodRows = (ad ? ad.products : []).map(p => ({ ...p, priceFmt: fmtPrice(p.price), catLabel: cats[p.cat] || p.cat, edit: () => this.startEdit('product', p), del: () => this.removeItem('products', p.id) }));
+    const vehRows = (ad ? ad.vehicles : []).map(v => ({ ...v, hasImg: !!v.img, noImg: !v.img, priceDlaFmt: fmtPrice(v.priceDla), priceOutFmt: fmtPrice(v.priceOut), availStyle: pill(v.available ? 'confirmé' : 'nouveau'), availLabel: v.available ? 'Disponible' : 'Indisponible', edit: () => this.startEdit('vehicle', v), del: () => this.removeItem('vehicles', v.id), toggleAvail: () => this.toggleField('vehicles', v.id, 'available') }));
+    const prodRows = (ad ? ad.products : []).map(p => ({ ...p, hasImg: !!p.img, noImg: !p.img, priceFmt: fmtPrice(p.price), catLabel: cats[p.cat] || p.cat, edit: () => this.startEdit('product', p), del: () => this.removeItem('products', p.id) }));
     const testRows = (ad ? ad.testimonials : []).map(tt => ({ ...tt, starStr: '★'.repeat(tt.stars), visStyle: pill(tt.visible ? 'confirmé' : 'nouveau'), visLabel: tt.visible ? 'Visible' : 'Masqué', edit: () => this.startEdit('testimonial', tt), del: () => this.removeItem('testimonials', tt.id), toggleVis: () => this.toggleField('testimonials', tt.id, 'visible') }));
     const stats = ad ? [
       { label:'Demandes', value: ad.requests.length, sub: ad.requests.filter(r => r.status === 'nouveau').length + ' nouvelle(s)' },
@@ -2257,14 +2387,31 @@ class Component extends DCLogic {
     if (ae) {
       const dt = ae.data;
       if (ae.type === 'vehicle') { editTitle = ae.isNew ? 'Nouveau véhicule' : 'Modifier le véhicule'; editFields = [
-        {key:'name',label:'Nom',type:'text',value:dt.name},{key:'year',label:'Année',type:'number',value:dt.year},{key:'plate',label:'Plaque',type:'text',value:dt.plate},{key:'fuel',label:'Carburant',type:'text',value:dt.fuel},{key:'trans',label:'Transmission',type:'text',value:dt.trans},{key:'seats',label:'Places',type:'number',value:dt.seats},{key:'priceDla',label:'Prix / jour Douala',type:'number',value:dt.priceDla},{key:'priceOut',label:'Prix hors Douala',type:'number',value:dt.priceOut},{key:'img',label:'Image (URL)',type:'text',value:dt.img}
+        {key:'name',label:'Nom',type:'text',value:dt.name},{key:'year',label:'Année',type:'number',value:dt.year},{key:'plate',label:'Plaque',type:'text',value:dt.plate},{key:'fuel',label:'Carburant',type:'text',value:dt.fuel},{key:'trans',label:'Transmission',type:'text',value:dt.trans},{key:'seats',label:'Places',type:'number',value:dt.seats},{key:'priceDla',label:'Prix / jour Douala',type:'number',value:dt.priceDla},{key:'priceOut',label:'Prix hors Douala',type:'number',value:dt.priceOut},{key:'img',label:'Photo du véhicule',type:'image',value:dt.img}
       ]; } else if (ae.type === 'product') { editTitle = ae.isNew ? 'Nouveau produit' : 'Modifier le produit'; editFields = [
-        {key:'name',label:'Nom',type:'text',value:dt.name},{key:'cat',label:'Catégorie (chaussures / sacs / accessoires / gadgets)',type:'text',value:dt.cat},{key:'price',label:'Prix (FCFA)',type:'number',value:dt.price},{key:'img',label:'Image (URL)',type:'text',value:dt.img}
+        {key:'name',label:'Nom',type:'text',value:dt.name},{key:'cat',label:'Catégorie (chaussures / sacs / accessoires / gadgets)',type:'text',value:dt.cat},{key:'price',label:'Prix (FCFA)',type:'number',value:dt.price},{key:'img',label:'Photo du produit',type:'image',value:dt.img}
       ]; } else { editTitle = ae.isNew ? 'Nouveau témoignage' : 'Modifier le témoignage'; editFields = [
         {key:'name',label:'Nom',type:'text',value:dt.name},{key:'city',label:'Ville',type:'text',value:dt.city},{key:'stars',label:'Étoiles (1-5)',type:'number',value:dt.stars},{key:'fr',label:'Avis (FR)',type:'textarea',value:dt.fr},{key:'en',label:'Avis (EN)',type:'textarea',value:dt.en}
       ]; }
     }
-    editFields = editFields.map(f => ({ ...f, isTextarea: f.type === 'textarea', notTextarea: f.type !== 'textarea', inputType: f.type === 'number' ? 'number' : 'text', onChange: (e) => this.updateEdit(f.key, f.type === 'number' ? Number(e.target.value) : e.target.value) }));
+    const imgBusy = this.state.imgUploading;
+    const imgErr = this.state.imgError;
+    editFields = editFields.map(f => {
+      const base = { ...f, isTextarea: f.type === 'textarea', isImage: f.type === 'image', isPlain: f.type !== 'textarea' && f.type !== 'image', inputType: f.type === 'number' ? 'number' : 'text', onChange: (e) => this.updateEdit(f.key, f.type === 'number' ? Number(e.target.value) : e.target.value) };
+      if (f.type !== 'image') return base;
+      const has = !!(f.value && String(f.value).trim());
+      return { ...base,
+        hasImage: has,
+        noImage: !has,
+        canClear: has && !imgBusy,
+        busy: imgBusy,
+        pickLabel: imgBusy ? 'Envoi en cours…' : (has ? 'Changer la photo' : 'Choisir une photo'),
+        pickStyle: 'display:inline-flex; align-items:center; padding:10px 14px; border-radius:8px; font-size:13px; font-weight:600; font-family:inherit; color:#fff; background:' + (imgBusy ? '#f0a8c6' : '#FF007F') + '; cursor:' + (imgBusy ? 'progress' : 'pointer') + ';',
+        hasError: !!imgErr,
+        error: imgErr,
+        onPick: (e) => this.pickEditImage(f.key, e),
+        onClear: () => this.clearEditImage(f.key) };
+    });
 
     return {
       t,
@@ -2391,6 +2538,9 @@ class Component extends DCLogic {
       addProduct: () => this.startEdit('product', null),
       addTestimonial: () => this.startEdit('testimonial', null),
       editOpen, editTitle, editFields,
+      editBusy: imgBusy,
+      saveLabel: imgBusy ? 'Photo en cours d’envoi…' : 'Enregistrer',
+      saveStyle: 'flex:1; border:none; padding:14px; border-radius:10px; font-family:inherit; font-size:14px; font-weight:600; color:#fff; background:' + (imgBusy ? '#f0a8c6' : '#FF007F') + '; cursor:' + (imgBusy ? 'progress' : 'pointer') + ';',
       saveEdit: () => this.saveEdit(),
       cancelEdit: () => this.cancelEdit(),
       onSetPhone: (e) => this.setSetting('phone', e.target.value),
