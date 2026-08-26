@@ -552,8 +552,8 @@
           <div onClick="{{ car.open }}" style="background: #141414; border: 1px solid rgba(255,255,255,0.06); border-radius: 16px; overflow: hidden; cursor: pointer; transition: border-color 0.2s, transform 0.2s;" style-hover="border-color: rgba(255,0,127,0.4); transform: translateY(-4px);">
             <div style="position: relative; aspect-ratio: 4/3; background: {{ car.bgStyle }}; overflow: hidden;">
               <div style="position: absolute; top: 12px; left: 12px; display: inline-flex; align-items: center; gap: 6px; background: rgba(10,10,10,0.7); backdrop-filter: blur(8px); padding: 5px 10px; border-radius: 999px; font-family: inherit; font-size: 10px; color: #fff">
-                <span style="width: 6px; height: 6px; border-radius: 999px; background: #00FF85;"></span>
-                {{ t.cars.available }}
+                <span style="{{ car.dotStyle }}"></span>
+                {{ car.availLabel }}
               </div>
               <div style="position: absolute; top: 12px; right: 12px; background: rgba(10,10,10,0.7); backdrop-filter: blur(8px); padding: 5px 10px; border-radius: 4px; font-family: Arial; font-size: 10px; color: #fff">{{ car.plate }}</div>
             </div>
@@ -795,7 +795,12 @@
       </div>
       <div style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 32px;">
         <div style="width: 52px; height: 52px; border-radius: 999px; overflow: hidden; border: 2px solid #FF007F; flex-shrink: 0;">
-          <img src="{{ testimonial.avatar }}" alt="{{ testimonial.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+          <sc-if value="{{ testimonial.hasAvatar }}" hint-placeholder-val="{{ true }}">
+            <img src="{{ testimonial.avatar }}" alt="{{ testimonial.name }}" style="width: 100%; height: 100%; object-fit: cover;">
+          </sc-if>
+          <sc-if value="{{ testimonial.noAvatar }}" hint-placeholder-val="{{ false }}">
+            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #FF007F; color: #fff; font-size: 20px; font-weight: 600;">{{ testimonial.initial }}</div>
+          </sc-if>
         </div>
         <div style="text-align: left;">
           <div style="font-size: 15px; font-weight: 600;">{{ testimonial.name }}</div>
@@ -1833,10 +1838,17 @@ class Component extends DCLogic {
     adminData: null,
     adminEdit: null,
     imgUploading: false,
-    imgError: ''
+    imgError: '',
+    // Catalogue servi aux visiteurs. Reste a null tant que la base n'a pas
+    // repondu : le rendu retombe alors sur les constantes du fichier, si bien
+    // que la page s'affiche pleine des la premiere seconde, meme hors ligne.
+    pubVehicles: null,
+    pubProducts: null,
+    pubTestimonials: null
   };
 
   componentDidMount() {
+    this.loadCatalog();
     this.authSub = db.auth.onAuthStateChange((_event, session) => {
       if (_event === 'INITIAL_SESSION') return;
       if (_event === 'SIGNED_OUT') { this.setState({ authUser: null, adminView: false, accountView: false }); return; }
@@ -1853,7 +1865,8 @@ class Component extends DCLogic {
       }
     }, 40);
     this.testTimer = setInterval(() => {
-      this.setState(s => ({ testIdx: (s.testIdx + 1) % TESTIMONIALS.length }));
+      const n = this.pubCatalog().testimonials.length || 1;
+      this.setState(s => ({ testIdx: (s.testIdx + 1) % n }));
     }, 6000);
     this.lastScrollY = window.scrollY;
     this.onScroll = () => {
@@ -2028,6 +2041,40 @@ class Component extends DCLogic {
       settings: { phone:'+237 651 41 06 87', email:'webshop237@gmail.com', address:'Bonamoussadi, en face du Petit Terrain, Douala – Cameroun', facebook:'https://www.facebook.com/webshop237', instagram:'https://www.instagram.com/websh_op237', tiktok:'https://www.tiktok.com/@webshop237', whatsapp:'https://wa.me/237651410687' }
     };
   }
+  // Le catalogue vient de la base, pas du fichier : ce que Franck modifie dans
+  // le panneau admin doit se voir sur le site. Une table vide ou une erreur
+  // laisse les constantes en place plutot que d'afficher une boutique vide.
+  async loadCatalog() {
+    try {
+      const [veh, prod, test] = await Promise.all([
+        db.from('vehicles').select('*').order('id', { ascending: true }),
+        db.from('products').select('*').order('id', { ascending: true }),
+        db.from('testimonials').select('*').order('id', { ascending: true })
+      ]);
+      const next = {};
+      if (!veh.error  && veh.data  && veh.data.length)  next.pubVehicles     = fromSbRows('vehicles', veh.data);
+      if (!prod.error && prod.data && prod.data.length) next.pubProducts     = fromSbRows('products', prod.data);
+      if (!test.error && test.data && test.data.length) next.pubTestimonials = fromSbRows('testimonials', test.data);
+      if (Object.keys(next).length) this.setState(next);
+      for (const r of [veh, prod, test]) {
+        if (r.error) console.warn('Catalogue : lecture partielle', r.error.message);
+      }
+    } catch (err) {
+      console.warn('Catalogue : lecture impossible, affichage des valeurs du fichier', err);
+    }
+  }
+
+  // Le catalogue effectivement affiche : la base si elle a repondu, le fichier
+  // sinon. Les temoignages masques depuis l'admin sont retires, mais si le tri
+  // ne laisse rien, on remontre tout plutot qu'un carrousel vide.
+  pubCatalog() {
+    const vehicles = this.state.pubVehicles || VEHICLES;
+    const products = this.state.pubProducts || PRODUCTS;
+    const all = this.state.pubTestimonials || TESTIMONIALS;
+    const shown = all.filter(t => t.visible !== false);
+    return { vehicles, products, testimonials: shown.length ? shown : all };
+  }
+
   async loadAdmin() {
     let data = null;
     try { data = JSON.parse(localStorage.getItem('webshop_admin_v1')); } catch (e) {}
@@ -2069,15 +2116,16 @@ class Component extends DCLogic {
   persistAdmin(data) { try { localStorage.setItem('webshop_admin_v1', JSON.stringify(data)); } catch (e) {} this.setState({ adminData: data }); }
   mutate(fn) { const data = JSON.parse(JSON.stringify(this.state.adminData || this.seedAdmin())); fn(data); this.persistAdmin(data); }
   addRequest(f) {
-    db.from('requests').insert({
+    return db.from('requests').insert({
       prenom: f.prenom, nom: f.nom, email: f.email, tel: f.tel,
       ville: f.ville, service: f.service, message: f.message || ''
     }).select().then(({ data, error }) => {
-      if (error) { console.warn('Supabase insert request failed', error); return; }
+      if (error) { console.warn('Supabase insert request failed', error); return false; }
       if (this.state.adminData && data && data[0]) {
         this.mutate(d => { d.requests.unshift({ id:data[0].id, prenom:f.prenom, nom:f.nom, email:f.email, tel:f.tel, ville:f.ville, service:f.service, message:f.message||'', status:'nouveau', date:new Date().toISOString().slice(0,10) }); });
       }
-    });
+      return true;
+    }).catch(err => { console.warn('Supabase insert request failed', err); return false; });
   }
   openAdmin() {
     if (!this.state.authUser || this.state.authUser.email !== 'admin@gmail.com') return;
@@ -2087,43 +2135,70 @@ class Component extends DCLogic {
   }
   closeAdmin() { this.endEdit(); this.setState({ adminView:false, adminEdit:null, imgUploading:false, imgError:'' }); document.body.style.overflow = ''; }
   setAdminSection(s) { this.endEdit(); this.setState({ adminSection:s, adminEdit:null, adminSidebarOpen: false, imgUploading:false, imgError:'' }); }
+  // Toutes les ecritures suivent le meme motif : l'ecran change tout de suite,
+  // la base ensuite. Quand l'envoi echoue, l'admin doit le savoir : sinon il
+  // croit sa modification enregistree alors qu'elle ne vit que dans le
+  // localStorage de cet appareil, et elle aura disparu au prochain chargement.
+  sbWrite(query, quoi, coll) {
+    const fini = (ok, err) => {
+      if (!ok) {
+        console.warn('Supabase ' + quoi + ' failed', err);
+        this.showToast(quoi + ' : la base n’a pas répondu. Modification visible sur cet appareil seulement.', 'error');
+        return false;
+      }
+      // Le catalogue affiché aux visiteurs vient de la base : on le relit pour
+      // que le site reflète la modification sans recharger la page.
+      if (coll && ['vehicles','products','testimonials'].indexOf(coll) >= 0) this.loadCatalog();
+      return true;
+    };
+    return Promise.resolve(query)
+      .then(res => fini(!(res && res.error), res && res.error))
+      .catch(err => fini(false, err));
+  }
+
   setStatus(coll, id, status) {
     this.mutate(d => { const it = d[coll].find(x => x.id === id); if (it) it.status = status; });
-    db.from(coll).update({ status }).eq('id', id).then(({error}) => { if(error) console.warn('Supabase update status failed', error); });
+    this.sbWrite(db.from(coll).update({ status }).eq('id', id), 'Statut', coll);
   }
   removeItem(coll, id) {
     // La fiche part, sa photo aussi : sans cela le bucket accumulerait des
     // fichiers que plus aucune fiche n’affiche.
     let goneImg = null;
-    this.mutate(d => { const it = d[coll].find(x => x.id === id); if (it) goneImg = it.img; d[coll] = d[coll].filter(x => x.id !== id); });
+    this.mutate(d => { const it = d[coll].find(x => x.id === id); if (it) goneImg = it.img || it.avatar; d[coll] = d[coll].filter(x => x.id !== id); });
     const gonePath = catalogPath(goneImg);
     if (gonePath) dropCatalogFiles([gonePath]);
-    db.from(coll).delete().eq('id', id).then(({error}) => { if(error) console.warn('Supabase delete failed', error); });
+    this.sbWrite(db.from(coll).delete().eq('id', id), 'Suppression', coll);
   }
   deleteUser(id) {
     this.mutate(d => { d.users = (d.users || []).filter(x => x.id !== id); });
-    db.from('profiles').delete().eq('id', id).then(({error}) => { if (error) console.warn('Supabase delete user failed', error); });
+    this.sbWrite(db.from('profiles').delete().eq('id', id), 'Suppression du compte');
   }
   toggleField(coll, id, field) {
     let newVal;
     this.mutate(d => { const it = d[coll].find(x => x.id === id); if (it) { it[field] = !it[field]; newVal = it[field]; } });
     if (newVal !== undefined) {
       const patch = {}; patch[field] = newVal;
-      db.from(coll).update(patch).eq('id', id).then(({error}) => { if (error) console.warn('Supabase toggleField failed', error); });
+      this.sbWrite(db.from(coll).update(patch).eq('id', id), 'Modification', coll);
     }
   }
   setSetting(k, v) {
     this.mutate(d => { d.settings[k] = v; });
-    db.from('site_settings').upsert({ key: k, value: v }).then(({error}) => { if (error) console.warn('Supabase setSetting failed', error); });
+    this.sbWrite(db.from('site_settings').upsert({ key: k, value: v }), 'Paramètre');
   }
+  // Produits et vehicules rangent leur photo dans « img », les temoignages
+  // dans « avatar » : la colonne s'appelle ainsi depuis l'origine cote base.
+  imgKey(type) { return type === 'testimonial' ? 'avatar' : 'img'; }
+  imgFolder(type) { return type === 'vehicle' ? 'vehicules' : type === 'testimonial' ? 'temoignages' : 'produits'; }
+
   blankEntity(type) {
     if (type === 'vehicle') return { id:0, name:'', year:2010, plate:'', fuel:'Essence', trans:'Manuelle', seats:5, priceDla:0, priceOut:0, available:true, img:'' };
     if (type === 'product') return { id:0, cat:'chaussures', name:'', price:0, img:'' };
-    return { id:0, name:'', city:'Douala', stars:5, fr:'', en:'', visible:true };
+    return { id:0, name:'', city:'Douala', stars:5, fr:'', en:'', visible:true, avatar:'' };
   }
   startEdit(type, data) {
     this.endEdit();
-    this.setState({ adminEdit: { type, isNew: !data, data: data ? { ...data } : this.blankEntity(type), origImg: data ? (data.img || '') : '' }, imgUploading:false, imgError:'' });
+    const ik = this.imgKey(type);
+    this.setState({ adminEdit: { type, isNew: !data, data: data ? { ...data } : this.blankEntity(type), origImg: data ? (data[ik] || '') : '' }, imgUploading:false, imgError:'' });
   }
   updateEdit(key, val) { this.setState(s => ({ adminEdit: { ...s.adminEdit, data: { ...s.adminEdit.data, [key]: val } } })); }
 
@@ -2147,7 +2222,7 @@ class Component extends DCLogic {
     // sous cette barre, mais un fichier énorme ferait patiner le téléphone
     // avant même d’être lu : autant le refuser tout de suite.
     if (file.size > 25 * 1024 * 1024) { this.setState({ imgError: 'Photo trop lourde (25 Mo maximum).' }); return; }
-    const folder = this.state.adminEdit.type === 'vehicle' ? 'vehicules' : 'produits';
+    const folder = this.imgFolder(this.state.adminEdit.type);
     const token = this._editToken || 0;
     this.setState({ imgUploading: true, imgError: '' });
     uploadCatalogImage(file, folder).then(({ path, url }) => {
@@ -2173,7 +2248,7 @@ class Component extends DCLogic {
     const data = { ...e.data };
     if (e.isNew) data.id = Date.now();
     // Seule la photo retenue reste dans le bucket ; l’ancienne, remplacée, s’en va.
-    const keptPath = catalogPath(data.img);
+    const keptPath = catalogPath(data[this.imgKey(e.type)]);
     this.endEdit(keptPath ? [keptPath] : []);
     const origPath = catalogPath(e.origImg);
     if (origPath && origPath !== keptPath) dropCatalogFiles([origPath]);
@@ -2181,7 +2256,7 @@ class Component extends DCLogic {
       if (e.isNew) { d[coll].push(data); }
       else { const i = d[coll].findIndex(x => x.id === data.id); if (i >= 0) d[coll][i] = data; }
     });
-    db.from(coll).upsert(toSbRow(coll, data)).then(({error}) => { if(error) console.warn('Supabase upsert failed', error); });
+    this.sbWrite(db.from(coll).upsert(toSbRow(coll, data)), 'Enregistrement', coll);
     this.setState({ adminEdit:null, imgError:'' });
   }
 
@@ -2205,17 +2280,25 @@ class Component extends DCLogic {
     if (!d.ville.trim()) errs.ville = t.form.required;
     if (!d.service) errs.service = t.form.required;
     if (Object.keys(errs).length) { this.setState({ formErrors: errs }); return; }
+    // La confirmation n'apparait qu'une fois la demande vraiment enregistree.
+    // Avant, elle s'affichait apres un simple delai : une coupure reseau et le
+    // visiteur repartait convaincu d'avoir ete contacte, sans que personne
+    // n'ait jamais recu sa demande.
     this.setState({ formSending: true });
-    setTimeout(() => {
-      this.setState({ formSending: false, formSent: true });
-      this.addRequest(d);
+    this.addRequest(d).then(ok => {
+      this.setState({ formSending: false });
+      if (!ok) {
+        this.showToast('Envoi impossible. Vérifiez votre connexion ou écrivez-nous sur WhatsApp.', 'error');
+        return;
+      }
+      this.setState({ formSent: true });
       setTimeout(() => {
         this.setState({
           formSent: false,
           formData: { nom:'', prenom:'', tel:'', wa:'', email:'', ville:'', service:'', message:'' }
         });
       }, 5000);
-    }, 1100);
+    });
   }
 
   renderVals() {
@@ -2226,15 +2309,19 @@ class Component extends DCLogic {
       waHref: 'https://wa.me/237651410687?text=' + encodeURIComponent('Bonjour WEBSHOP, je souhaite des informations sur : ' + s.title)
     }));
 
-    const vehicles = VEHICLES.map(v => ({
+    const cat = this.pubCatalog();
+
+    const vehicles = cat.vehicles.map(v => ({
       ...v,
+      availLabel: v.available === false ? t.cars.unavailable : t.cars.available,
+      dotStyle: 'width: 6px; height: 6px; border-radius: 999px; background: ' + (v.available === false ? '#8a8377' : '#00FF85') + ';',
       priceDla: fmtPrice(v.priceDla),
       priceOut: fmtPrice(v.priceOut),
       bgStyle: "#141414 url('" + v.img + "') center/cover no-repeat",
       open: () => this.openVehicle(v)
     }));
 
-    const filteredProducts = (this.state.galleryCat === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.cat === this.state.galleryCat)).map(p => ({
+    const filteredProducts = (this.state.galleryCat === 'all' ? cat.products : cat.products.filter(p => p.cat === this.state.galleryCat)).map(p => ({
       ...p,
       priceFmt: fmtPrice(p.price),
       catLabel: cats[p.cat] || p.cat,
@@ -2258,19 +2345,26 @@ class Component extends DCLogic {
       items: g.items.map(it => ({ label: this.state.lang === 'fr' ? it.fr : it.en, price: it.price, unit: it.unit }))
     }));
 
-    const test = TESTIMONIALS[this.state.testIdx];
+    // La liste peut retrecir entre deux rendus (temoignage masque depuis
+    // l'admin) : sans ce modulo, l'index pointerait dans le vide.
+    const testList = cat.testimonials;
+    const testIdx = testList.length ? this.state.testIdx % testList.length : 0;
+    const test = testList[testIdx] || { name:'', city:'', stars:5, fr:'', en:'' };
+    const testAvatar = test.avatar || '';
     const testimonial = {
       name: test.name,
-      initial: test.name.charAt(0),
+      initial: (test.name || '?').charAt(0).toUpperCase(),
       city: test.city,
-      avatar: test.avatar,
-      stars: '★'.repeat(test.stars) + '☆'.repeat(5 - test.stars),
+      avatar: testAvatar,
+      hasAvatar: !!testAvatar,
+      noAvatar: !testAvatar,
+      stars: '★'.repeat(test.stars || 0) + '☆'.repeat(5 - (test.stars || 0)),
       text: this.state.lang === 'fr' ? test.fr : test.en
     };
-    const testDots = TESTIMONIALS.map((_, i) => ({
+    const testDots = testList.map((_, i) => ({
       idx: i,
       set: () => this.setTest(i),
-      style: 'width: 24px; height: 4px; border-radius: 2px; border: none; cursor: pointer; background: ' + (i === this.state.testIdx ? '#FF007F' : 'rgba(255,255,255,0.2)') + '; transition: background 0.2s;'
+      style: 'width: 24px; height: 4px; border-radius: 2px; border: none; cursor: pointer; background: ' + (i === testIdx ? '#FF007F' : 'rgba(255,255,255,0.2)') + '; transition: background 0.2s;'
     }));
 
     const catList = ['all','chaussures','sacs','accessoires','gadgets'].map(c => ({
@@ -2391,7 +2485,7 @@ class Component extends DCLogic {
       ]; } else if (ae.type === 'product') { editTitle = ae.isNew ? 'Nouveau produit' : 'Modifier le produit'; editFields = [
         {key:'name',label:'Nom',type:'text',value:dt.name},{key:'cat',label:'Catégorie (chaussures / sacs / accessoires / gadgets)',type:'text',value:dt.cat},{key:'price',label:'Prix (FCFA)',type:'number',value:dt.price},{key:'img',label:'Photo du produit',type:'image',value:dt.img}
       ]; } else { editTitle = ae.isNew ? 'Nouveau témoignage' : 'Modifier le témoignage'; editFields = [
-        {key:'name',label:'Nom',type:'text',value:dt.name},{key:'city',label:'Ville',type:'text',value:dt.city},{key:'stars',label:'Étoiles (1-5)',type:'number',value:dt.stars},{key:'fr',label:'Avis (FR)',type:'textarea',value:dt.fr},{key:'en',label:'Avis (EN)',type:'textarea',value:dt.en}
+        {key:'name',label:'Nom',type:'text',value:dt.name},{key:'city',label:'Ville',type:'text',value:dt.city},{key:'stars',label:'Étoiles (1-5)',type:'number',value:dt.stars},{key:'fr',label:'Avis (FR)',type:'textarea',value:dt.fr},{key:'en',label:'Avis (EN)',type:'textarea',value:dt.en},{key:'avatar',label:'Photo du client',type:'image',value:dt.avatar}
       ]; }
     }
     const imgBusy = this.state.imgUploading;
